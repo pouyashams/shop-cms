@@ -204,6 +204,7 @@ class MainForm extends Component {
                             this.setState({
                                 step: step + 1
                             })
+                            this.showNotification("tc", "کالا با موفقیت ثبت شد!", "success");
                         } else {
                             this.showNotification("tc", "خطایی در پردازش اطلاعات رخ داده است!", "danger")
                         }
@@ -325,7 +326,7 @@ class MainForm extends Component {
     render() {
         const {step} = this.state;
         switch (step) {
-            case 3:
+            case 1:
                 return <div dir="rtl">
                     <ProductDetails
                         nextStep={this.nextStep}
@@ -366,13 +367,21 @@ class MainForm extends Component {
                         open={this.state.tc}
                     />
                 </div>
-            case 1:
-                return <Success
-                    name={this.state.name}
-                    productItemInfoList={this.state.productItemInfoList}
-                    p={console.log(this.state.productItemSupplierList)}
-                />
-
+            case 3:
+                return <div dir="rtl">
+                    <Success
+                        name={this.state.name}
+                        productItemInfoList={this.state.productItemInfoList}
+                        p={console.log(this.state.productItemSupplierList)}
+                    />
+                    <Snackbar
+                        place="tc"
+                        color={this.state.alertStyle}
+                        icon={AddAlert}
+                        message={this.state.text}
+                        open={this.state.tc}
+                    />
+                </div>
             default:
                 return <Success/>
         }

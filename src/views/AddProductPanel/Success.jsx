@@ -205,34 +205,6 @@ class Success extends React.Component {
             },
         ],
     }
-
-    componentWillUnmount() {
-        if(this.state.showNotification){
-            this.showNotification("tc", "کالا با موفقیت ثبت شد!", "success");
-            this.state.showNotification = false;
-        }
-
-        var id = window.setTimeout(null, 0);
-        while (id--) {
-            window.clearTimeout(id);
-        }
-    }
-
-    showNotification(place, text, alertStyle) {
-        var x = [];
-        x[place] = true;
-        x['text'] = text;
-        x['alertStyle'] = alertStyle;
-        this.setState(x);
-        this.alertTimeout = setTimeout(
-            function () {
-                x[place] = false;
-                this.setState(x);
-            }.bind(this),
-            6000
-        );
-    }
-
     refreshPage() {
         window.location.reload();
     }
