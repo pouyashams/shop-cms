@@ -18,6 +18,10 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from 'react-select';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableRow from '@material-ui/core/TableRow';
 import Muted from "components/Typography/Muted.jsx";
 import NumberFormat from 'react-number-format';
 import {Input, LocaleProvider, Upload, Icon, Modal} from 'antd';
@@ -169,7 +173,8 @@ const styles = theme => ({
 
 class EditProduct extends React.Component {
     state = {
-        resultList: [],
+        lastProductItemAttributeInfo: null,
+        productItemAttributeInfoList :[],
         resData: null,
         selectedOption: "",
         productItemInfoList: {
@@ -361,26 +366,65 @@ class EditProduct extends React.Component {
 
 
     showattributeData() {
-        var resultList = [];
-        for (let i = 0; i < this.state.resData.productItemInfo.productAttributeItemList.length; i++) {
-            const options = [];
-            for (let j = 0; j < this.state.resData.productItemInfo.productAttributeItemList[i].productAttributeCategory.productAttributeList.length; j++) {
-                var info = {
-                    value: this.state.resData.productItemInfo.productAttributeItemList[i].productAttributeCategory.productAttributeList[j].identifier,
-                    label: this.state.resData.productItemInfo.productAttributeItemList[i].productAttributeCategory.productAttributeList[j].attributeValue
-                }
-                options.push(info)
-            }
-            var sina = {
-                options : options ,
-                productAttributeCategory : this.state.resData.productItemInfo.productAttributeItemList[i].productAttributeCategory,
-                productAttribute : this.state.resData.productItemInfo.productAttributeItemList[i].productAttribute
-            }
-
-            resultList.push(sina);
-
+        var productItemAttributeInfoList = [];
+        var lastProductItemAttributeInfo = null;
+        var info = {
+            item1: null,
+            item2: null
         }
-        this.setState({resultList});
+
+        var tool = this.state.resData.productItemInfo.productAttributeItemList.length;
+        console.log("salaammm")
+        console.log(tool)
+        console.log("salaammm")
+
+        this.state.resData.productItemInfo.productAttributeItemList.forEach(function (productAttributeItem, index) {
+            console.log("2")
+            var selected = {}
+            var selectedProductAttribute = productAttributeItem.productAttributeCategory;
+            var productAttributeList = selectedProductAttribute.productAttributeList;
+            var productAttributeInfoList = [];
+            productAttributeList.forEach(function (productAttribute) {
+                console.log("3")
+                var infoooo = {
+                    value: productAttribute.identifier + '#' + selectedProductAttribute.identifier,
+                    label: productAttribute.attributeValue
+                }
+                if(productAttribute.identifier === productAttributeItem.productAttribute.identifier){
+                    selected = infoooo;
+                }
+                productAttributeInfoList.push(infoooo);
+            });
+
+            var itemInfo = {
+                productAttributeInfoList: productAttributeInfoList,
+                categoryName: selectedProductAttribute.categoryName,
+                categoryIdentifier: selectedProductAttribute.identifier,
+                selectedAttribue : selected
+            }
+
+            console.log(itemInfo)
+
+            if (info.item1 === null) {
+                info.item1 = itemInfo;
+            } else if (info.item2 === null) {
+                info.item2 = itemInfo;
+            }
+
+            if (info.item1 !== null && info.item2 !== null) {
+                productItemAttributeInfoList.push(info);
+
+                info = {
+                    item1: null,
+                    item2: null
+                }
+            } else if (tool === index + 1) {
+                lastProductItemAttributeInfo = info.item1;
+            }
+        });
+        console.log(lastProductItemAttributeInfo)
+        console.log(productItemAttributeInfoList)
+        this.setState({lastProductItemAttributeInfo,productItemAttributeInfoList});
     }
 
     handleChangePrice = input => event => {
@@ -592,103 +636,109 @@ class EditProduct extends React.Component {
                             />
                             <div>
                                 {this.state.open === true ?
+                                    <LocaleProvider locale={faIR}>
                                     <Modal
-                                        width="1100px"
-
+                                        width="1200px"
                                         className={classes.Rtl}
                                         visible={this.state.open}
                                         onOk={this.handleSave}
                                         onCancel={this.handleClose}
-                                        closable={false}
+                                        // closable={false}
                                     >
 
                                         <card>
                                             <CardBody>
-                                                <CardHeader color="warning">
-                                                    <h4 className={classes.cardTitleWhite}>{text}</h4>
-                                                </CardHeader>
                                                 <MuiThemeProvider theme={theme}>
                                                     <div dir="rtl">
-                                                        <form>
-                                                            <form>
-                                                                <FormControlLabel
-                                                                    style={{
-                                                                        marginTop: theme.spacing.unit * 2,
-                                                                    }}
-                                                                    control={
-                                                                        <NumberFormat
-                                                                            // thousandSeparator={true}
-                                                                            customInput={Input}
-                                                                            className={classes.inputStyleN}
-                                                                            // value={productItemInfo.price}
-                                                                            placeholder="---------------------------"
-                                                                            onChange={this.handleChangePrice()}
-                                                                            // format="###,###,###"
-                                                                            defaultValue={this.state.dialogData.productItemInfo.price}
-                                                                            variant="outlined"
-                                                                            margin="normal"
-                                                                            required
+                                                        <Card
+                                                            style={{
+                                                                backgroundColor: "#f6f8f7",
+                                                            }}
+                                                        >
+                                                            <CardHeader color="warning">
+                                                                <h4 className={classes.cardTitleWhite}>{text}</h4>
+                                                            </CardHeader>
+                                                            <CardBody>
+                                                                <form>
+                                                                    <form>
+                                                                        <FormControlLabel
+                                                                            style={{
+                                                                                marginTop: theme.spacing.unit * 2,
+                                                                            }}
+                                                                            control={
+                                                                                <NumberFormat
+                                                                                    // thousandSeparator={true}
+                                                                                    customInput={Input}
+                                                                                    className={classes.inputStyleN}
+                                                                                    // value={productItemInfo.price}
+                                                                                    placeholder="---------------------------"
+                                                                                    onChange={this.handleChangePrice()}
+                                                                                    // format="###,###,###"
+                                                                                    defaultValue={this.state.dialogData.productItemInfo.price}
+                                                                                    variant="outlined"
+                                                                                    margin="normal"
+                                                                                    required
+                                                                                />
+                                                                            }
+                                                                            label={"قیمت (تومان): "}
+                                                                            labelPlacement="start"
                                                                         />
-                                                                    }
-                                                                    label={"قیمت (تومان): "}
-                                                                    labelPlacement="start"
-                                                                />
-                                                                <FormControlLabel
-                                                                    style={{
-                                                                        marginTop: theme.spacing.unit * 2,
-                                                                    }}
-                                                                    control={
-                                                                        <Input
-                                                                            placeholder="-------------------------------"
-                                                                            className={classes.inputStyleN}
-                                                                            onChange={this.handleChangeCode()}
-                                                                            defaultValue={this.state.dialogData.productItemInfo.code}
+                                                                        <FormControlLabel
+                                                                            style={{
+                                                                                marginTop: theme.spacing.unit * 2,
+                                                                            }}
+                                                                            control={
+                                                                                <Input
+                                                                                    placeholder="-------------------------------"
+                                                                                    className={classes.inputStyleN}
+                                                                                    onChange={this.handleChangeCode()}
+                                                                                    defaultValue={this.state.dialogData.productItemInfo.code}
+                                                                                />
+                                                                            }
+                                                                            label={"شناسه ی کالا: "}
+                                                                            labelPlacement="start"
                                                                         />
-                                                                    }
-                                                                    label={"شناسه ی کالا: "}
-                                                                    labelPlacement="start"
-                                                                />
-                                                                <FormControlLabel
-                                                                    style={{
-                                                                        marginTop: theme.spacing.unit * 2,
-                                                                    }}
-                                                                    control={
-                                                                        <Input
-                                                                            placeholder="-------------------------------"
-                                                                            type="number"
-                                                                            className={classes.inputStyleN}
-                                                                            onChange={this.handleChangeNumberOfProduct()}
-                                                                            defaultValue={this.state.dialogData.productItemInfo.numberOfProduct}
+                                                                        <FormControlLabel
+                                                                            style={{
+                                                                                marginTop: theme.spacing.unit * 2,
+                                                                            }}
+                                                                            control={
+                                                                                <Input
+                                                                                    placeholder="-------------------------------"
+                                                                                    type="number"
+                                                                                    className={classes.inputStyleN}
+                                                                                    onChange={this.handleChangeNumberOfProduct()}
+                                                                                    defaultValue={this.state.dialogData.productItemInfo.numberOfProduct}
+                                                                                />
+                                                                            }
+                                                                            label={"تعداد کالا: "}
+                                                                            labelPlacement="start"
                                                                         />
-                                                                    }
-                                                                    label={"تعداد کالا: "}
-                                                                    labelPlacement="start"
-                                                                />
 
-                                                                <FormControlLabel
-                                                                    style={{
-                                                                        marginTop: theme.spacing.unit * 2,
-                                                                    }}
-                                                                    control={
-                                                                        <Select
-                                                                            className={classes.inputSelectionSup}
-                                                                            isDisabled={false}
-                                                                            isLoading={false}
-                                                                            isClearable={true}
-                                                                            isRtl={true}
-                                                                            isSearchable={true}
-                                                                            value={this.state.productItemInfoList.productItemSupplier.identifier}
-                                                                            options={this.state.suplier}
-                                                                            onChange={this.handleChangeSupplier}
-                                                                            placeholder="----------------------"
+                                                                        <FormControlLabel
+                                                                            style={{
+                                                                                marginTop: theme.spacing.unit * 2,
+                                                                            }}
+                                                                            control={
+                                                                                <Select
+                                                                                    className={classes.inputSelectionSup}
+                                                                                    isDisabled={false}
+                                                                                    isLoading={false}
+                                                                                    isClearable={true}
+                                                                                    isRtl={true}
+                                                                                    isSearchable={true}
+                                                                                    value={this.state.productItemInfoList.productItemSupplier.identifier}
+                                                                                    options={this.state.suplier}
+                                                                                    onChange={this.handleChangeSupplier}
+                                                                                    placeholder="----------------------"
+                                                                                />
+                                                                            }
+                                                                            label={"فروشنده محصول: "}
+                                                                            labelPlacement="start"
                                                                         />
-                                                                    }
-                                                                    label={"فروشنده محصول: "}
-                                                                    labelPlacement="start"
-                                                                />
 
-                                                            </form>
-                                                            <form>
+                                                                    </form>
+                                                                    <form>
                                                     <TextArea
                                                         rows={11}
                                                         defaultValue={this.state.dialogData.productItemInfo.description}
@@ -697,90 +747,137 @@ class EditProduct extends React.Component {
                                                         placeholder="توضیحات"
 
                                                     />
-
-
-                                                            </form>
-                                                        </form>
-                                                        <GridContainer>
-                                                            <GridItem xs={12} sm={12} md={12}>
-                                                                {/*{console.log(12)}*/}
-                                                                {/*{console.log(this.state.search)}*/}
-                                                                {/*{this.state.search !== null ?*/}
-                                                                {/*this.searchItemProduct() : null}*/}
-                                                                {/*{console.log(13)}*/}
-                                                                {/*{console.log(this.state.search)}*/}
-
-                                                                <form>
-                                                                    <header
-                                                                        style={{
-                                                                            marginTop: theme.spacing.unit * 2,
-                                                                            marginBottom: theme.spacing.unit * 2,
-                                                                        }}
-                                                                    >
-                                                                        <Muted>عکس مورد نظر وارد کنید:</Muted>
-                                                                    </header>
-                                                                    <LocaleProvider locale={faIR}>
-                                                                        <div className="clearfix">
-                                                                            <Upload
-                                                                                accept={".jpg"}
-                                                                                action="//jsonplaceholder.typicode.com/posts/"
-                                                                                listType="picture-card"
-                                                                                fileList={fileList}
-                                                                                onPreview={this.handlePreview}
-                                                                                onChange={this.handleChange}
-                                                                            >
-                                                                                {fileList.length >= 10 ? null : uploadButton}
-                                                                            </Upload>
-                                                                            <Modal
-                                                                                visible={previewVisible} footer={null}
-                                                                                onCancel={this.handleCancel}>
-                                                                                <img alt="example"
-                                                                                     style={{width: '100%'}}
-                                                                                     src={previewImage}/>
-                                                                            </Modal>
-                                                                        </div>
-                                                                    </LocaleProvider>
-
-                                                                    {this.pushImage()}
+                                                                    </form>
                                                                 </form>
-                                                            </GridItem>
-                                                        </GridContainer>
-
-                                                        {/*<TableWithAction*/}
-                                                        {/*tableColumns={this.state.tableColumnsDialog}*/}
-                                                        {/*dataTable={this.state.dataTableDialog}*/}
-                                                        {/*treeTable={this.state.treeTable}*/}
-                                                        {/*buttonList={null}*/}
-                                                        {/*Pagination={this.state.PaginationDialog}*/}
-                                                        {/*/>*/}
-
-                                                        {
-                                                            this.state.resultList.map(result => (
-                                                                <GridItem xs={12} sm={12} md={5}>
-                                                                    <label>{result.productAttributeCategory.categoryName}</label>
-                                                                    <Select
-                                                                        isDisabled={false}
-                                                                        isLoading={false}
-                                                                        isClearable={true}
-                                                                        isRtl={true}
-                                                                        isSearchable={true}
-                                                                        name="color"
-                                                                        options={result.options}
-                                                                        defaultValue={result.productAttribute.attributeValue}
-                                                                        value={result.productAttribute.identifier}
-                                                                        onChange={this.handleChangeSelect}
-                                                                        placeholder="انتخاب کنید..."
-                                                                        p={console.log("444")}
-                                                                    />
-                                                                    {console.log("555")}
-                                                                </GridItem>
-                                                            ))
-                                                        }
+                                                                <GridContainer>
+                                                                    <GridItem xs={12} sm={12} md={12}>
+                                                                        <form>
+                                                                            <header
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                    marginBottom: theme.spacing.unit * 2,
+                                                                                }}
+                                                                            >
+                                                                                <Muted>عکس مورد نظر وارد کنید:</Muted>
+                                                                            </header>
+                                                                            <LocaleProvider locale={faIR}>
+                                                                                <div className="clearfix">
+                                                                                    <Upload
+                                                                                        accept={".jpg"}
+                                                                                        action="//jsonplaceholder.typicode.com/posts/"
+                                                                                        listType="picture-card"
+                                                                                        fileList={fileList}
+                                                                                        onPreview={this.handlePreview}
+                                                                                        onChange={this.handleChange}
+                                                                                    >
+                                                                                        {fileList.length >= 10 ? null : uploadButton}
+                                                                                    </Upload>
+                                                                                    <Modal
+                                                                                        visible={previewVisible} footer={null}
+                                                                                        onCancel={this.handleCancel}>
+                                                                                        <img alt="example"
+                                                                                             style={{width: '100%'}}
+                                                                                             src={previewImage}/>
+                                                                                    </Modal>
+                                                                                </div>
+                                                                            </LocaleProvider>
+                                                                            {this.pushImage()}
+                                                                        </form>
+                                                                    </GridItem>
+                                                                </GridContainer>
+                                                            </CardBody>
+                                                        </Card>
+                                                        <Card
+                                                            style={{
+                                                                backgroundColor: "#f6f8f7",
+                                                            }}
+                                                        >
+                                                            <CardHeader plain color="warning">
+                                                                <h4 className={classes.cardTitleWhite}>اصلاح ویژگی های کالا</h4>
+                                                            </CardHeader>
+                                                            <CardBody>
+                                                                <Table className={classes.table}>
+                                                                    <TableBody>
+                                                                        {this.state.productItemAttributeInfoList.map((attribute, index) => (
+                                                                                <TableRow key={attribute.item1.identifier}>
+                                                                                    <TableCell component="th" scope="row">
+                                                                                        {attribute.item1.categoryName}
+                                                                                    </TableCell>
+                                                                                    <TableCell>
+                                                                                        <Select
+                                                                                            className={classes.inputSelection}
+                                                                                            isDisabled={false}
+                                                                                            isLoading={false}
+                                                                                            isClearable={true}
+                                                                                            isRtl={true}
+                                                                                            isSearchable={true}
+                                                                                            name="color"
+                                                                                            options={attribute.item1.productAttributeInfoList}
+                                                                                            value={attribute.item1.selectedAttribue}
+                                                                                            defaultValue={attribute.item1.selectedAttribue}
+                                                                                            onChange={this.handleChangeSelection}
+                                                                                            placeholder="انتخاب کنید..."
+                                                                                        />
+                                                                                    </TableCell>
+                                                                                    <TableCell component="th" scope="row">
+                                                                                        {attribute.item2.categoryName}
+                                                                                    </TableCell>
+                                                                                    <TableCell>
+                                                                                        <Select
+                                                                                            className={classes.inputSelection}
+                                                                                            isDisabled={false}
+                                                                                            isLoading={false}
+                                                                                            isClearable={true}
+                                                                                            isRtl={true}
+                                                                                            isSearchable={true}
+                                                                                            name="color"
+                                                                                            options={attribute.item2.productAttributeInfoList}
+                                                                                            value={attribute.item2.selectedAttribue}
+                                                                                            defaultValue={attribute.item2.selectedAttribue}
+                                                                                            onChange={this.handleChangeSelection}
+                                                                                            placeholder="انتخاب کنید .."
+                                                                                        />
+                                                                                    </TableCell>
+                                                                                </TableRow>
+                                                                            )
+                                                                        )}
+                                                                        {this.state.lastProductItemAttributeInfo !== null
+                                                                            ?
+                                                                            <TableRow>
+                                                                                <TableCell component="th" scope="row">
+                                                                                    {this.state.lastProductItemAttributeInfo.categoryName}
+                                                                                </TableCell>
+                                                                                <TableCell>
+                                                                                    <Select
+                                                                                        className={classes.inputSelection}
+                                                                                        isDisabled={false}
+                                                                                        isLoading={false}
+                                                                                        isClearable={true}
+                                                                                        isRtl={true}
+                                                                                        isSearchable={true}
+                                                                                        name="color"
+                                                                                        options={this.state.lastProductItemAttributeInfo.productAttributeInfoList}
+                                                                                        value={this.state.lastProductItemAttributeInfo.selectedAttribue}
+                                                                                        defaultValue={this.state.lastProductItemAttributeInfo.selectedAttribue}
+                                                                                        onChange={this.handleChangeSelection}
+                                                                                        placeholder="انتخاب کنید .."
+                                                                                    />
+                                                                                </TableCell>
+                                                                                <TableCell/>
+                                                                                <TableCell/>
+                                                                            </TableRow>
+                                                                            : null
+                                                                        }
+                                                                    </TableBody>
+                                                                </Table>
+                                                            </CardBody>
+                                                        </Card>
                                                     </div>
                                                 </MuiThemeProvider>
                                             </CardBody>
                                         </card>
                                     </Modal>
+                                    </LocaleProvider>
                                     : null
                                 }
                             </div>

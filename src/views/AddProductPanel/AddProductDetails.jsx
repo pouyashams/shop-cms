@@ -239,7 +239,7 @@ class AddProductDetails extends React.Component {
     }
 
     handleChangeDescription = input => event => {
-        // console.log(this.props.productItemInfo);
+        console.log(this.props.productItemInfo);
         this.props.productItemInfo.description = event.target.value;
     }
 
@@ -260,7 +260,11 @@ class AddProductDetails extends React.Component {
                 <div dir="rtl">
                     <Card>
                         <CardBody>
-                            <Card>
+                            <Card
+                                style={{
+                                    backgroundColor: "#f6f8f7",
+                                }}
+                            >
                                 <CardHeader plain color={this.props.color}>
                                     <h4 className={classes.cardTitleWhite}>تعریف مشخصات کالا</h4>
                                 </CardHeader>
@@ -335,6 +339,8 @@ class AddProductDetails extends React.Component {
                                                                 isRtl={true}
                                                                 isSearchable={true}
                                                                 options={this.props.productItemSupplierList}
+                                                                value={this.props.productItemInfo.productItemSupplier}
+                                                                defaultValue={this.props.productItemInfo.productItemSupplier}
                                                                 onChange={this.handleChangeSupplier}
                                                                 placeholder="----------------------"
                                                             />
@@ -372,7 +378,6 @@ class AddProductDetails extends React.Component {
                                                 </header>
                                                 <LocaleProvider locale={faIR}>
                                                     <div className="clearfix">
-
                                                         <Upload
                                                             accept={".jpg"}
                                                             action="//jsonplaceholder.typicode.com/posts/"
@@ -397,7 +402,11 @@ class AddProductDetails extends React.Component {
                                     </GridContainer>
                                 </CardBody>
                             </Card>
-                            <Card>
+                            <Card
+                                style={{
+                                    backgroundColor: "#f6f8f7",
+                                }}
+                            >
                                 <CardHeader plain color={this.props.color}>
                                     <h4 className={classes.cardTitleWhite}>تعریف ویژگی های کالا</h4>
                                 </CardHeader>

@@ -170,27 +170,27 @@ class Success extends React.Component {
             columns: [{
                 Header: 'نام کالا',
                 accessor: 'nameOfProduct',
-                filterable: true,
+                // filterable: true,
             },
                 {
                     Header: 'شناسه کالا',
                     accessor: 'code',
-                    filterable: true,
+                    // filterable: true,
                 },
                 {
                     Header: 'تعداد کالا',
-                    filterable: true,
+                    // filterable: true,
                     accessor: 'numberOfProduct',
                 },
                 {
                     Header: 'فروشنده محصول',
                     accessor: 'productItemSupplier',
-                    filterable: true,
+                    // filterable: true,
                 },
                 {
                     Header: 'قیمت کالا',
                     accessor: 'price',
-                    filterable: true,
+                    // filterable: true,
                 },
 
             ]

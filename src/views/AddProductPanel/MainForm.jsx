@@ -65,7 +65,7 @@ class MainForm extends Component {
                 numberOfProduct: '',
                 description: '',
                 productItemImageBase64List:[],
-                // productItemImageList: [],
+                productItemImageList: [],
                 productItemSupplier: {
                     identifier: '',
                     label: ''
@@ -354,7 +354,6 @@ class MainForm extends Component {
                         productItemSupplierList={this.state.productItemSupplierList}
                         lastProductItemAttributeInfo={this.state.lastProductItemAttributeInfo}
                         handelechangeWithValue={this.handelechangeWithValue}
-                        sendInformationOfProduct={this.sendInformationOfProduct}
                         color={this.state.color}
                     />
                     <Snackbar

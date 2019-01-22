@@ -83,7 +83,7 @@ class HeaderLinks extends React.Component {
             className={classes.buttonLink}
           >
             <Notifications className={classes.icons} />
-            <span className={classes.notifications}>5</span>
+            {/*<span className={classes.notifications}>5</span>*/}
             <Hidden mdUp implementation="css">
               <p onClick={this.handleClick} className={classes.linkText}>
                 Notification
@@ -112,38 +112,38 @@ class HeaderLinks extends React.Component {
               >
                 <Paper>
                   <ClickAwayListener onClickAway={this.handleClose}>
-                    <MenuList role="menu">
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Mike John responded to your email
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        You have 5 new tasks
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        You're now friend with Andrew
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Another Notification
-                      </MenuItem>
-                      <MenuItem
-                        onClick={this.handleClose}
-                        className={classes.dropdownItem}
-                      >
-                        Another One
-                      </MenuItem>
-                    </MenuList>
+                    {/*<MenuList role="menu">*/}
+                      {/*<MenuItem*/}
+                        {/*onClick={this.handleClose}*/}
+                        {/*className={classes.dropdownItem}*/}
+                      {/*>*/}
+                        {/*Mike John responded to your email*/}
+                      {/*</MenuItem>*/}
+                      {/*<MenuItem*/}
+                        {/*onClick={this.handleClose}*/}
+                        {/*className={classes.dropdownItem}*/}
+                      {/*>*/}
+                        {/*You have 5 new tasks*/}
+                      {/*</MenuItem>*/}
+                      {/*<MenuItem*/}
+                        {/*onClick={this.handleClose}*/}
+                        {/*className={classes.dropdownItem}*/}
+                      {/*>*/}
+                        {/*You're now friend with Andrew*/}
+                      {/*</MenuItem>*/}
+                      {/*<MenuItem*/}
+                        {/*onClick={this.handleClose}*/}
+                        {/*className={classes.dropdownItem}*/}
+                      {/*>*/}
+                        {/*Another Notification*/}
+                      {/*</MenuItem>*/}
+                      {/*<MenuItem*/}
+                        {/*onClick={this.handleClose}*/}
+                        {/*className={classes.dropdownItem}*/}
+                      {/*>*/}
+                        {/*Another One*/}
+                      {/*</MenuItem>*/}
+                    {/*</MenuList>*/}
                   </ClickAwayListener>
                 </Paper>
               </Grow>

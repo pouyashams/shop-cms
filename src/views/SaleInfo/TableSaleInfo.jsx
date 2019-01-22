@@ -64,7 +64,11 @@ class TableSaleInfo extends React.Component {
 
                                 <GridItem xs={12} sm={12} md={12}>
                                     <CardBody>
-                                        <Card>
+                                        <Card
+                                            style={{
+                                                backgroundColor: "#f6f8f7",
+                                            }}
+                                        >
                                             <CardBody>
                                                 <Table
                                                     tableHeaderColor="primary"
@@ -73,7 +77,12 @@ class TableSaleInfo extends React.Component {
                                                 />
                                             </CardBody>
                                         </Card>
-                                        <Card>
+                                        <Card
+                                            style={{
+                                                backgroundColor: "#f6f8f7",
+                                                
+                                            }}
+                                        >
                                             <CardBody>
                                         <Table
                                             tableHeaderColor="primary"

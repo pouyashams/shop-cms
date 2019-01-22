@@ -178,12 +178,10 @@ class TableWithAction extends React.Component {
                 <div dir="rtl">
                     {this.props.treeTable === true ?
                         <ReactTable
-                            // style={{
-                            //     width: "100%",
-                            //     height: "100%",
-                            //     backgroundColor: "#e2e1de",
-                            //     borderRadius: "2px"
-                            // }}
+                            noDataText="اطلاعاتی وجود ندارد"
+                            style={{
+                                textAlign: "center"
+                            }}
                             data={this.props.dataTable}
                             resizable={false}
                             ofText='از'
@@ -198,6 +196,10 @@ class TableWithAction extends React.Component {
                                 return (
                                     <div>
                                         <ReactTable
+                                            style={{
+                                                textAlign: "center"
+                                            }}
+                                            noDataText="اطلاعاتی وجود ندارد"
                                             data={this.props.dataTableInfo}
                                             columns={sub_columns}
                                             showPagination={false}
@@ -211,6 +213,10 @@ class TableWithAction extends React.Component {
                             TrGroupComponent={TrGroupComponent}
                         />
                         : <ReactTable
+                            style={{
+                                textAlign: "center"
+                            }}
+                            noDataText="اطلاعاتی وجود ندارد"
                             resizable={false}
                             data={this.props.dataTable}
                             ofText='از'

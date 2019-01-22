@@ -116,7 +116,6 @@ class AddProductDetailsPanel extends React.Component {
 
     saveAndContinue = (e) => {
         e.preventDefault()
-        this.props.sendInformationOfProduct()
         this.props.nextStep()
     }
 

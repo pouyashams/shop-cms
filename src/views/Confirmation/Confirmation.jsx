@@ -193,19 +193,19 @@ class Confirmation extends React.Component {
             columns: [{
                 Header: 'نام',
                 accessor: 'firstName',
-                filterable: true,
+                // filterable: true,
                 resizable: false,
             },
                 {
                     Header: 'نام خانوادگی',
                     accessor: 'lastName',
-                    filterable: true,
+                    // filterable: true,
                     resizable: false,
 
                 },
                 {
                     Header: 'شماره',
-                    filterable: true,
+                    // filterable: true,
                     accessor: 'number',
                     resizable: false,
 
@@ -214,7 +214,7 @@ class Confirmation extends React.Component {
                     Header: 'ادرس',
                     accessor: 'address',
                     width: 320,
-                    filterable: true,
+                    // filterable: true,
                     resizable: false,
 
                 },
@@ -225,7 +225,7 @@ class Confirmation extends React.Component {
                 columns: [{
                     Header: 'تعداد کل کالا',
                     accessor: 'numberOfAllProduct',
-                    filterable: true,
+                    // filterable: true,
                     resizable: false,
 
                 },
@@ -238,18 +238,18 @@ class Confirmation extends React.Component {
                     {
                         Header: 'وضعیت درخواست',
                         accessor: 'requestStatus',
-                        filterable: true,
+                        // filterable: true,
                         resizable: false,
                     },
                     {
                         Header: 'قیمت کل',
                         accessor: 'priceOfAll',
-                        filterable: true,
+                        // filterable: true,
                         resizable: false,
                     },
                     {
                         Header: 'شناسه پرداخت',
-                        filterable: true,
+                        // filterable: true,
                         accessor: 'paymentNumber',
                         resizable: false,
 
