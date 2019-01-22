@@ -10,7 +10,9 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import Select from 'react-select';
-import FormGroup from '@material-ui/core/FormGroup';
+import {Input} from 'antd';
+import 'antd/dist/antd.css';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -83,7 +85,9 @@ const styles = theme => ({
     },
     inputStyle: {
         height: "38px",
-        width: 140,
+        marginLeft: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 1,
+        width: 150,
         direction: 'rtl'
     },
     formControl: {
@@ -95,9 +99,11 @@ const styles = theme => ({
     },
 
     inputSelection: {
-        height: "36px",
+        height: "40px",
         marginTop: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 4,
+        marginBottom: theme.spacing.unit * 2,
+        marginLeft: theme.spacing.unit * 6,
+        marginRight: theme.spacing.unit * 1,
         width: 160,
     },
     cardHeaderStyle: {
@@ -146,31 +152,45 @@ class ProductDetails extends React.Component {
                         </CardHeader>
                         <CardBody>
                             <GridContainer>
-                                <GridItem>
-                                    <FormGroup row>
-                                        <TextField
-                                            placeholder="نام کالا"
-                                            className={classes.inputStyle}
-                                            onChange={this.props.handleChange('name')}
-                                            defaultValue={this.props.name}
-                                            variant="outlined"
-                                            margin="normal"
-                                            required
-                                        />
-                                        <Select
-                                            className={classes.inputSelection}
-                                            isDisabled={false}
-                                            isLoading={false}
-                                            isClearable={true}
-                                            isRtl={true}
-                                            isSearchable={true}
-                                            name="color"
-                                            options={this.props.productCategoryOptions}
-                                            onChange={this.handleChange}
-                                            placeholder="دسته کالا"
-                                            value={this.state.selectedOption}
-                                        />
-                                    </FormGroup>
+                                <GridItem xs={12} sm={12} md={12}>
+
+                                    <FormControlLabel
+                                        style={{
+                                            marginTop: theme.spacing.unit * 2,
+                                        }}
+                                        control={
+                                            <Input
+                                                placeholder="-------------------------------"
+                                                className={classes.inputStyle}
+                                                onChange={this.props.handleChange('name')}
+                                                defaultValue={this.props.name}
+                                            />
+                                        }
+                                        label={"نام کالا :"}
+                                        labelPlacement="start"
+                                    />
+                                    <FormControlLabel
+                                        style={{
+                                            marginTop: theme.spacing.unit * 2,
+                                        }}
+                                        control={
+                                            <Select
+                                                className={classes.inputSelection}
+                                                isDisabled={false}
+                                                isLoading={false}
+                                                isClearable={true}
+                                                isRtl={true}
+                                                isSearchable={true}
+                                                options={this.props.productCategoryOptions}
+                                                onChange={this.handleChange}
+                                                placeholder="----------------------"
+                                                value={this.state.selectedOption}
+
+                                            />
+                                        }
+                                        label={"دسته ی کالا :"}
+                                        labelPlacement="start"
+                                    />
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={12}>
                                     <CardFooter>

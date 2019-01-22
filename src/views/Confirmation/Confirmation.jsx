@@ -137,39 +137,12 @@ const styles = theme => ({
     customButtons: {},
 })
 
-
 class Confirmation extends React.Component {
     state = {
-        Pagination:true,
+        Pagination: true,
         buttonList: [
-            <Button
-                variant="contained"
-                style={{
-                    height: "25px",
-                    width: 60,
-                    boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-                    background: "linear-gradient(60deg, #125a62, #125a62)"
-                }}
-                color="secondary"
-                onClick={() => {
-                    console.log(1)
-                }}>
-                تایید
-            </Button>
             ,
-            <Button variant="contained"
-                    style={{
-                        height: "25px",
-                        width: 60,
-                        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-                        background: "linear-gradient(60deg, #125a62, #125a62)"
-                    }}
-                    color="secondary"
-                    onClick={() => {
-                        console.log(1)
-                    }}>
-                لغو
-            </Button>
+
         ],
         treeTable: true,
         numberOfProduct: 3,
@@ -187,14 +160,14 @@ class Confirmation extends React.Component {
                 name: "paymentStatus",
                 searchType: "select",
                 labelText: "وضعیت پرداخت :",
-                placeholder: "-------------------------"
+                placeholder: "-----------------------"
             },
 
             {
                 name: "accessStatus",
                 searchType: "select",
                 labelText: "وضعیت تایید :",
-                placeholder: "-------------------------"
+                placeholder: "-----------------------"
             },
 
             {
@@ -220,23 +193,30 @@ class Confirmation extends React.Component {
             columns: [{
                 Header: 'نام',
                 accessor: 'firstName',
-                filterable: true
+                filterable: true,
+                resizable: false,
             },
                 {
                     Header: 'نام خانوادگی',
                     accessor: 'lastName',
-                    filterable: true
+                    filterable: true,
+                    resizable: false,
+
                 },
                 {
                     Header: 'شماره',
                     filterable: true,
-                    accessor: 'number'
+                    accessor: 'number',
+                    resizable: false,
+
                 },
                 {
                     Header: 'ادرس',
                     accessor: 'address',
                     width: 320,
                     filterable: true,
+                    resizable: false,
+
                 },
             ]
         },
@@ -246,30 +226,74 @@ class Confirmation extends React.Component {
                     Header: 'تعداد کل کالا',
                     accessor: 'numberOfAllProduct',
                     filterable: true,
+                    resizable: false,
+
                 },
                     // {
                     //     Header: 'وضعیت پرداخت',
                     //     accessor: 'paymentStatus',
                     //     filterable: true,
-                    //
+                    //                        resizable: false,
                     // },
                     {
                         Header: 'وضعیت درخواست',
                         accessor: 'requestStatus',
                         filterable: true,
-
+                        resizable: false,
                     },
                     {
                         Header: 'قیمت کل',
                         accessor: 'priceOfAll',
                         filterable: true,
-
+                        resizable: false,
                     },
                     {
                         Header: 'شناسه پرداخت',
                         filterable: true,
-                        accessor: 'paymentNumber'
+                        accessor: 'paymentNumber',
+                        resizable: false,
+
                     },
+
+                    {
+                        Cell: ({value}) => (
+                            <Button
+                                variant="contained"
+                                style={{
+                                    height: "25px",
+                                    width: 60,
+                                    boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
+                                    background: "linear-gradient(60deg, #125a62, #125a62)"
+                                }}
+                                color="secondary"
+                                onClick={() => {
+                                    console.log(1)
+                                }}>
+                                تایید
+                            </Button>
+                        ),
+                        resizable: false,
+                        width: 95
+                    },
+                    {
+                        Cell: ({value}) => (
+                            <Button variant="contained"
+                                    style={{
+                                        height: "25px",
+                                        width: 60,
+                                        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
+                                        background: "linear-gradient(60deg, #125a62, #125a62)"
+                                    }}
+                                    color="secondary"
+                                    onClick={() => {
+                                        console.log(1)
+                                    }}>
+                                لغو
+                            </Button>
+                        ),
+                        resizable: false,
+                        width: 95
+                    }
 
                 ]
             }],

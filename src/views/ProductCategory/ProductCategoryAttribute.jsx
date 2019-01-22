@@ -16,6 +16,9 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import axios from "axios";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import AddAlert from "@material-ui/icons/AddAlert";
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import {Input} from 'antd';
+import 'antd/dist/antd.css';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -84,48 +87,51 @@ const styles = theme => ({
         margin: "8px -6px 0px 0px;"
     },
     inputStyle: {
-        height: "30px",
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
-        width: 200,
+        height: "40px",
+        marginLeft: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 1,
+        width: 120,
         direction: 'rtl'
-    }
+    },
 });
+
 class ProductCategoryAttribute extends React.Component {
     state = {
         name: '',
         elements: [],
         countOfElements: 0,
-        elementsValue: [
-        ],
+        elementsValue: [],
         text: '',
         alertStyle: 'info',
         tc: false,
     };
+
     onButtonClick() {
         if (this.state.name === '') {
-            this.showNotification("tc","نام ویژگی را وارد کنید!", 'danger')
+            this.showNotification("tc", "نام ویژگی را وارد کنید!", 'danger')
             return;
         } else if (this.state.elements.length === 0) {
-            this.showNotification("tc","حداقل یک مقدار ویژگی اضافه کنید!", 'danger')
+            this.showNotification("tc", "حداقل یک مقدار ویژگی اضافه کنید!", 'danger')
             return;
         } else {
             for (var i = 0; i < this.state.elements.length; i++) {
                 let value = this.state.elements[i].value;
                 if (value === null || value === '') {
-                    this.showNotification("tc","حداقل یک مقدار ویژگی وارد کنید!", 'danger')
+                    this.showNotification("tc", "حداقل یک مقدار ویژگی وارد کنید!", 'danger')
                     return;
                 }
             }
         }
         this.sendProductAttributeCategory();
     }
+
     componentWillUnmount() {
         var id = window.setTimeout(null, 0);
         while (id--) {
             window.clearTimeout(id);
         }
     }
+
     showNotification(place, text, alertStyle) {
         var x = [];
         x[place] = true;
@@ -140,11 +146,12 @@ class ProductCategoryAttribute extends React.Component {
             6000
         );
     }
+
     sendProductAttributeCategory() {
         for (var i = 0; i < this.state.elements.length; i++) {
             let value = this.state.elements[i].value;
             const attributeValue = {
-            "attributeValue":value
+                "attributeValue": value
             };
             this.state.elementsValue.push(attributeValue);
         }
@@ -156,17 +163,17 @@ class ProductCategoryAttribute extends React.Component {
             data)
             .then(res => {
                 if (res.data.success) {
-                    this.showNotification("tc","عملیات با موفقیت انجام شد!", "success")
+                    this.showNotification("tc", "عملیات با موفقیت انجام شد!", "success")
                     this.setState({
                         name: '',
                         elements: [],
                         countOfElements: 0
                     });
                 } else {
-                    this.showNotification("tc","عملیات انجام نشد! ", "danger")
+                    this.showNotification("tc", "عملیات انجام نشد! ", "danger")
                 }
-            }).catch((error)=>{
-            this.showNotification("tc","عملیات انجام نشد! ", "danger")
+            }).catch((error) => {
+            this.showNotification("tc", "عملیات انجام نشد! ", "danger")
         });
     };
     handleChangeName = () => event => {
@@ -201,6 +208,7 @@ class ProductCategoryAttribute extends React.Component {
         elements.push(newItem);
         this.setState({elements, countOfElements});
     };
+
     render() {
         const {classes} = this.props;
 
@@ -213,44 +221,56 @@ class ProductCategoryAttribute extends React.Component {
                         </CardHeader>
                         <CardBody>
                             <GridContainer>
-                                <GridItem xs={12} sm={12} md={5}>
-                                    <form className={classes.container} noValidate autoComplete="off">
-                                        <TextField
-                                            id="standard-name"
-                                            placeholder="نام ویژگی"
-                                            className={classes.inputStyle}
-                                            value={this.state.name}
-                                            onChange={this.handleChangeName()}
-                                            margin="normal"
-                                            variant="outlined"
-                                            required
-                                        />
-                                    </form>
+                                <GridItem xs={12} sm={12} md={12}>
+                                    <FormControlLabel
+                                        style={{
+                                            marginTop: theme.spacing.unit * 2,
+                                        }}
+                                        control={
+                                            <Input
+                                                placeholder="---------------------------"
+                                                className={classes.inputStyle}
+                                                onChange={this.handleChangeName()}
+                                                defaultValue={this.state.name}
+                                                value={this.state.name}
+                                            />
+                                        }
+                                        label={"نام ویژگی :"}
+                                        labelPlacement="start"
+                                    />
                                 </GridItem>
                             </GridContainer>
-                            {this.state.elements.map(element => (
-                                <GridContainer key={element.id}>
-                                    <GridItem xs={12} sm={12} md={5}>
-                                        <form className={classes.container} noValidate autoComplete="off">
-                                            <div onClick={this.handleCloseElement(element.id)}>
-                                                <IconButton aria-label="Delete" className={classes.deleteIcon}>
+
+                                <GridContainer>
+                                    <GridItem xs={12} sm={12} md={12}>
+                                        <form className={classes.container}
+                                              style={{marginTop: theme.spacing.unit * 8,}}
+                                        >
+                                            {this.state.elements.map(element => (
+                                            <GridContainer key={element.id}>
+                                            <div onClick={this.handleCloseElement(element.id)}
+                                                 style={{
+                                                     marginRight: theme.spacing.unit * 8,
+                                                     marginBottom: theme.spacing.unit * 2
+                                                 }}
+                                            >
+                                                <IconButton aria-label="Delete">
                                                     <DeleteIcon fontSize="small"/>
                                                 </IconButton>
                                             </div>
-                                            <TextField
-                                                id={"element" + element.id}
-                                                placeholder="مقدار ویژگی"
-                                                className={classes.inputStyle}
-                                                value={element.value}
-                                                variant="outlined"
-                                                onChange={this.handleChange()}
-                                                margin="normal"
-                                                required
-                                            />
+                                                    <Input
+                                                        value={element.value}
+                                                        id={"element" + element.id}
+                                                        placeholder="مقدار ویژگی"
+                                                        className={classes.inputStyle}
+                                                        onChange={this.handleChange()}
+                                                    />
+                                            </GridContainer>
+                                            ))}
                                         </form>
                                     </GridItem>
                                 </GridContainer>
-                            ))}
+
                         </CardBody>
                         <CardFooter>
                             <Button variant="contained" className={classes.customColor} color="secondary"
@@ -277,6 +297,7 @@ class ProductCategoryAttribute extends React.Component {
         );
     }
 }
+
 ProductCategoryAttribute.propTypes = {
     classes: PropTypes.object.isRequired,
 };

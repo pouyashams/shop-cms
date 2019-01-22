@@ -54,7 +54,7 @@ const dashboardRoutes = [
     {
         path: "/editProduct",
         sidebarName: "به روز رسانی کالا",
-        navbarName: "به روز رسانی کالا  ",
+        // navbarName: "به روز رسانی کالا  ",
         icon: "content_paste",
         component: EditProduct
     },

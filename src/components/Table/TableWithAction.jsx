@@ -4,7 +4,8 @@ import React from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
-
+import { render } from "react-dom";
+import "./index.css";
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -141,23 +142,50 @@ const styles = theme => ({
 })
 
 class TableWithAction extends React.Component {
+    constructor() {
+        super();
+        this._tBodyComponent = null;
+    }
+    handleScroll(event) {
+        let headers = document.getElementsByClassName("rt-thead");
+        for (let i = 0; i < headers.length; i++) {
+            headers[i].scrollLeft = event.target.scrollLeft;
+        }
+    }
+    componentDidMount() {
+        this._tBodyComponent = document.getElementsByClassName("rt-tbody")[0];
+        this._tBodyComponent.addEventListener("scroll", this.handleScroll);
+    }
+    componentWillUnmount() {
+        this._tBodyComponent.removeEventListener("scroll", this.handleScroll);
+    }
     render() {
+        const TbodyComponent = props => {
+            for (let i = 0; i < props.children[0].length; i++) {
+                props.children[0][i] = React.cloneElement(props.children[0][i],{ minWidth: props.style.minWidth })
+            }
+            return <div className="rt-tbody">{props.children}</div>
+        }
+
+        const TrGroupComponent = props => {
+            return <div className="rt-tr-group" role="rowgroup" style={{ minWidth: props.minWidth }}>{props.children}</div>
+        }
         const {classes} = this.props;
         const columns = this.props.tableColumns;
         const sub_columns = this.props.tableColumnsInfo;
-        console.log(this.props.buttonList)
-        this.props.buttonList !== null ?
-            this.props.buttonList.map(buttonList => (
-                columns.push({
-                    Cell: ({value}) => (buttonList)
-                })
-            )) : null
         return (
             <MuiThemeProvider theme={theme}>
                 <div dir="rtl">
                     {this.props.treeTable === true ?
                         <ReactTable
+                            // style={{
+                            //     width: "100%",
+                            //     height: "100%",
+                            //     backgroundColor: "#e2e1de",
+                            //     borderRadius: "2px"
+                            // }}
                             data={this.props.dataTable}
+                            resizable={false}
                             ofText='از'
                             pageText='صفحه'
                             rowsText='ردیف'
@@ -178,7 +206,11 @@ class TableWithAction extends React.Component {
                                     </div>
                                 )
                             }}
-                        /> : <ReactTable
+                            className="-striped -highlight"
+                            TbodyComponent={TbodyComponent}
+                            TrGroupComponent={TrGroupComponent}
+                        />
+                        : <ReactTable
                             resizable={false}
                             data={this.props.dataTable}
                             ofText='از'
@@ -189,6 +221,7 @@ class TableWithAction extends React.Component {
                             defaultPageSize={5}
                             columns={columns}
                             showPagination={this.props.Pagination}
+                            className="-striped -highlight"
                         />
                     }
                 </div>

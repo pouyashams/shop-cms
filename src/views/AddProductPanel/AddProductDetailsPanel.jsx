@@ -9,7 +9,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 // import AddIcon from '@material-ui/icons/Add';
-import AddStuffDetails from "./AddProductDetails";
+import AddProductDetails from "./AddProductDetails";
 // import axios from "axios";
 // import Stepper from '@material-ui/core/Stepper';
 // import Step from '@material-ui/core/Step';
@@ -143,7 +143,7 @@ class AddProductDetailsPanel extends React.Component {
                             <GridContainer>
                                 <GridItem xs={12} sm={12} md={12}>
                                     {this.props.productItemInfoList.map(productItemInfo => (
-                                        <AddStuffDetails
+                                        <AddProductDetails
                                             handleChange={this.props.handleChange}
                                             values={this.props.values}
                                             productItemInfo={productItemInfo}
@@ -151,7 +151,9 @@ class AddProductDetailsPanel extends React.Component {
                                             productItemSupplierList={this.props.productItemSupplierList}
                                             lastProductItemAttributeInfo={this.props.lastProductItemAttributeInfo}
                                             color={this.props.color}
-
+                                            previewVisible={this.props.previewVisible}
+                                            previewImage={this.props.previewImage}
+                                            fileList={this.props.fileList}
                                         />
                                     ))}
                                 </GridItem>

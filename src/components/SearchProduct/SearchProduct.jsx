@@ -8,6 +8,8 @@ import Select from 'react-select';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Button from '@material-ui/core/Button';
 import NumberFormat from 'react-number-format';
+import {Input} from 'antd';
+import 'antd/dist/antd.css';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -99,11 +101,12 @@ const styles = theme => ({
         direction: 'rtl'
     },
     inputStyle: {
-        height: "36px",
-        marginLeft: theme.spacing.unit * 6,
+        height: "38px",
+        marginTop: theme.spacing.unit * 2,
         marginRight: theme.spacing.unit * 1,
+        marginLeft: theme.spacing.unit * 2,
         marginBottom: theme.spacing.unit * 2,
-        width: 120,
+        width: 150,
         direction: 'rtl'
     },
     customButtons: {
@@ -137,11 +140,10 @@ const styles = theme => ({
     },
     inputSelectionSup: {
         height: "38px",
-
         marginTop: theme.spacing.unit * 2,
-        marginBottom: theme.spacing.unit * 2,
-        marginLeft: theme.spacing.unit * 6,
         marginRight: theme.spacing.unit * 1,
+        marginLeft: theme.spacing.unit * 2,
+        marginBottom: theme.spacing.unit * 2,
         width: 160,
     },
     table: {
@@ -152,31 +154,54 @@ const styles = theme => ({
 class SearchProduct extends React.Component {
     state = {
         search: [],
-        searchInfo: {
-            name: "",
-            value: "",
-        },
         textField: '',
         numberTextField: '',
         numberFormat: '',
         select: '',
     }
-    handelechangeWithValue = name => event => {
-        this.state.searchInfo.name = name;
-        this.state.searchInfo.value = event.target.value;
-        if (this.state.search.length === 0) {
-            this.state.search.push(this.state.searchInfo);
-        }
-        for (let i = 0; i < this.state.search.length; i++) {
-            if (this.state.search[i].name !== this.state.searchInfo.name) {
-                console.log(1)
-                this.state.search.push(this.state.searchInfo);
+
+    sina = search => event => {
+        // console.log(this.state.search)
+        this.props.handleChangeSearch(this.state.search);
+    }
+
+        handelechangeWithValue = name => event => {
+        // this.state.searchInfo.name = name;
+        // this.state.searchInfo.value = event.target.value;
+
+        var searchInfo = {
+            name: name,
+            value: event.target.value
+        };
+
+
+        // console.log(this.state.search.length)
+        // console.log(55)
+            var found = false;
+            for (var i = 0; i < this.state.search.length; i++) {
+                if(this.state.search[i].name === searchInfo.name){
+                    this.state.search[i].value = searchInfo.value;
+                    found = true;
+                    break;
+                }
             }
-        }
+
+            if(!found){
+                this.state.search.push(searchInfo);
+            }
+            // console.log(this.state.search.length)
+
+        // console.log(this.state.search)
+
+        // if () {
+            //     console.log("azefwgd")
+            //     ;
+            // }
+        // }
     }
     handleChangeParentInfo = name => (selectedOption) => {
-        console.log(name);
-        console.log(selectedOption);
+        // console.log(name);
+        // console.log(selectedOption);
         this.state.searchInfo.name = name;
         this.state.searchInfo.value = selectedOption;
 
@@ -203,15 +228,11 @@ class SearchProduct extends React.Component {
                                     searchInfo.searchType === "textField" ?
                                         < FormControlLabel
                                             control={
-                                                <TextField
+                                                <Input
                                                     placeholder={searchInfo.placeholder}
                                                     className={classes.inputStyle}
-                                                    p={console.log(searchInfo.name)}
                                                     onChange={this.handelechangeWithValue(searchInfo.name)}
                                                     defaultValue={searchInfo.defaultValue}
-                                                    variant="outlined"
-                                                    margin="normal"
-                                                    required
                                                 />
                                             }
                                             label={searchInfo.labelText}
@@ -219,17 +240,17 @@ class SearchProduct extends React.Component {
                                         /> : (
                                             searchInfo.searchType === "numberTextField" ?
                                                 <FormControlLabel
+                                                    style={{
+                                                        marginTop: theme.spacing.unit * 2,
+                                                    }}
                                                     control={
-                                                        <TextField
+                                                        <Input
                                                             placeholder={searchInfo.placeholder}
-                                                            type="number"
-                                                            InputProps={{inputProps: {min: 0, max: 1000000}}}
                                                             className={classes.inputStyle}
                                                             onChange={this.handelechangeWithValue(searchInfo.name)}
                                                             defaultValue={searchInfo.defaultValue}
-                                                            variant="outlined"
-                                                            margin="normal"
-                                                            required
+                                                            type="number"
+
                                                         />
                                                     }
                                                     label={searchInfo.labelText}
@@ -239,7 +260,7 @@ class SearchProduct extends React.Component {
                                                         <FormControlLabel
                                                             control={
                                                                 <NumberFormat
-                                                                    customInput={TextField}
+                                                                    customInput={Input}
                                                                     value={searchInfo.defaultValue}
                                                                     className={classes.inputStyle}
                                                                     format={searchInfo.format}
@@ -251,7 +272,7 @@ class SearchProduct extends React.Component {
                                                                 />
 
                                                             }
-                                                            label={"از تاریخ : "}
+                                                            label={searchInfo.labelText}
                                                             labelPlacement="start"
                                                         /> : (
                                                             searchInfo.searchType === "select" ?
@@ -277,11 +298,12 @@ class SearchProduct extends React.Component {
                                                 )
                                         )
                                 ))}
-                                {console.log(this.props.searchInfo)}
+                                {/*{console.log("pouya")}*/}
+                                {/*{console.log(this.state.search)}*/}
+
                             </form>
-                            <Button variant="contained" className={classes.customButtons}
-                                    color="secondary"
-                                    onClick={this.props.handleChangeSearch(this.state.search)}>
+                            <Button variant="contained" className={classes.customButtons} color="secondary"
+                                    onClick={this.sina(this.state.search)}>
                                 جستجو
                             </Button>
                             <br/>

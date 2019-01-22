@@ -17,6 +17,8 @@ import Snackbar from "components/Snackbar/Snackbar.jsx";
 import AddAlert from "@material-ui/icons/AddAlert";
 import Select from 'react-select';
 import FormLabel from '@material-ui/core/FormLabel';
+import {Input} from 'antd';
+import 'antd/dist/antd.css';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -33,6 +35,9 @@ const styles = theme => ({
     },
     formStyleControl: {
         height: "5px",
+        marginBottom: theme.spacing.unit * 6,
+        marginTop: theme.spacing.unit * 6,
+
     },
     button: {
         margin: theme.spacing.unit,
@@ -101,15 +106,17 @@ const styles = theme => ({
     },
     inputStyle: {
         height: "38px",
-        width: 140,
-        direction: 'rtl',
-        marginLeft: theme.spacing.unit,
-        marginRight: theme.spacing.unit,
+        marginLeft: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 1,
+        width: 150,
+        direction: 'rtl'
     },
     inputSelection: {
-        height: "36px",
+        height: "40px",
         marginTop: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 4,
+        marginBottom: theme.spacing.unit * 2,
+        marginLeft: theme.spacing.unit * 6,
+        marginRight: theme.spacing.unit * 1,
         width: 160,
     },
     FormControlLabel: {
@@ -290,30 +297,45 @@ class definitionProductCategory extends React.Component {
                         </CardHeader>
                         <CardBody>
                             <GridContainer>
-                                <GridItem xs={12} sm={12} md={5}>
+                                <GridItem xs={12} sm={12} md={12}>
                                     <form className={classes.container} noValidate autoComplete="off">
+                                        <FormControlLabel
+                                            style={{
+                                                marginTop: theme.spacing.unit * 2,
+                                            }}
+                                            control={
+                                                <Input
+                                                    placeholder="-------------------------------"
+                                                    className={classes.inputStyle}
+                                                    onChange={this.handleChangeCategoryName()}
+                                                    value={this.state.categoryName}
+                                                />
+                                            }
+                                            label={"نام نوع کالا :"}
+                                            labelPlacement="start"
+                                        />
+                                        <FormControlLabel
+                                            style={{
+                                                marginTop: theme.spacing.unit * 2,
+                                            }}
+                                            control={
+                                                <Select
+                                                    className={classes.inputSelection}
+                                                    isDisabled={false}
+                                                    isLoading={false}
+                                                    isClearable={true}
+                                                    isRtl={true}
+                                                    isSearchable={true}
+                                                    name="color"
+                                                    options={this.state.productCategoryOptions}
+                                                    onChange={this.handleChangeParentInfo}
+                                                    placeholder="----------------------"
+                                                />
+                                            }
+                                            label={"دسته ی پدر :"}
+                                            labelPlacement="start"
+                                        />
 
-                                        <TextField
-                                            placeholder="نام نوع کالا"
-                                            className={classes.inputStyle}
-                                            value={this.state.categoryName}
-                                            variant="outlined"
-                                            onChange={this.handleChangeCategoryName()}
-                                            margin="normal"
-                                            required
-                                        />
-                                        <Select
-                                            className={classes.inputSelection}
-                                            isDisabled={false}
-                                            isLoading={false}
-                                            isClearable={true}
-                                            isRtl={true}
-                                            isSearchable={true}
-                                            name="color"
-                                            options={this.state.productCategoryOptions}
-                                            onChange={this.handleChangeParentInfo}
-                                            placeholder="دسته پدر"
-                                        />
                                     </form>
                                 </GridItem>
                             </GridContainer>
@@ -322,12 +344,12 @@ class definitionProductCategory extends React.Component {
                             </form>
                             <GridContainer>
                                 {this.state.attributeCategoryList.map(attributeCategory => (
-                                    <GridItem key={attributeCategory.productAttributeCategoryInfo.identifier} xs={6}
+                                    <GridItem key={attributeCategory.productAttributeCategoryInfo.identifier} xs={12}
                                               sm={6} md={3}>
                                         <div dir="rtl" className={classes.root}>
                                             <FormControl component="fieldset" className={classes.formControl}>
                                                 <FormLabel component="legend">
-                                                    <pre>               </pre>
+                                                    <h7>.........................................</h7>
                                                 </FormLabel>
                                                 <FormGroup>
                                                     <FormControlLabel
@@ -339,12 +361,12 @@ class definitionProductCategory extends React.Component {
                                                         }
                                                         label={attributeCategory.productAttributeCategoryInfo.categoryName}
                                                         labelPlacement="start"
-                                                        />
+                                                    />
                                                 </FormGroup>
                                             </FormControl>
                                         </div>
                                     </GridItem>
-                                    ))}
+                                ))}
                             </GridContainer>
                         </CardBody>
                         <CardFooter>
@@ -352,7 +374,6 @@ class definitionProductCategory extends React.Component {
                                     onClick={this.onButtonClick.bind(this)}>
                                 ذخیره کردن
                             </Button>
-
                             <Snackbar
                                 place="tc"
                                 color={this.state.alertStyle}

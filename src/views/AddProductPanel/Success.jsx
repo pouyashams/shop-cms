@@ -10,7 +10,7 @@ import CardFooter from "components/Card/CardFooter.jsx";
 import Button from '@material-ui/core/Button';
 import TableWithAction from "../../components/Table/TableWithAction";
 import Muted from "components/Typography/Muted.jsx";
-import {Route, Redirect} from 'react-router'
+import ReactDOM from "react-dom";
 
 const theme = createMuiTheme({
     direction: 'rtl',
