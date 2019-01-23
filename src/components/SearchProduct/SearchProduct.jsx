@@ -160,59 +160,60 @@ class SearchProduct extends React.Component {
         select: '',
     }
 
-    sina = search => event => {
+    handler = search => event => {
         // console.log(this.state.search)
         this.props.handleChangeSearch(this.state.search);
     }
 
-        handelechangeWithValue = name => event => {
+    handelechangeWithValue = name => event => {
         // this.state.searchInfo.name = name;
         // this.state.searchInfo.value = event.target.value;
-
         var searchInfo = {
             name: name,
             value: event.target.value
         };
-
-
         // console.log(this.state.search.length)
         // console.log(55)
+        var found = false;
+        for (var i = 0; i < this.state.search.length; i++) {
+            if (this.state.search[i].name === searchInfo.name) {
+                this.state.search[i].value = searchInfo.value;
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            this.state.search.push(searchInfo);
+            console.log(this.state.search)
+        }
+    }
+    handleChangeParentInfo = name => (selectedOption) => {
+        // console.log(name);
+        // console.log(selectedOption);
+        if (selectedOption !== null) {
+            var searchInfo = {
+                name: name,
+                value: selectedOption.value
+
+            };
+
             var found = false;
             for (var i = 0; i < this.state.search.length; i++) {
-                if(this.state.search[i].name === searchInfo.name){
+                if (this.state.search[i].name === searchInfo.name) {
                     this.state.search[i].value = searchInfo.value;
                     found = true;
                     break;
                 }
             }
-
-            if(!found){
+            if (!found) {
                 this.state.search.push(searchInfo);
-            }
-            // console.log(this.state.search.length)
-
-        // console.log(this.state.search)
-
-        // if () {
-            //     console.log("azefwgd")
-            //     ;
-            // }
-        // }
-    }
-    handleChangeParentInfo = name => (selectedOption) => {
-        // console.log(name);
-        // console.log(selectedOption);
-        this.state.searchInfo.name = name;
-        this.state.searchInfo.value = selectedOption;
-
-        if (this.state.search.length === 0) {
-            this.state.search.push(this.state.searchInfo);
-        }
-        for (let i = 0; i < this.state.search.length; i++) {
-            if (this.state.search[i].name !== this.state.searchInfo.name) {
-                this.state.search.push(this.state.searchInfo);
+                console.log(12321)
+                console.log(this.state.search)
             }
         }
+        // this.state.searchInfo.name = name;
+        // this.state.searchInfo.value = selectedOption;
     }
 
     render() {
@@ -285,8 +286,7 @@ class SearchProduct extends React.Component {
                                                                             isClearable={true}
                                                                             isRtl={true}
                                                                             isSearchable={true}
-                                                                            value={searchInfo.defaultValue}
-                                                                            // options={searchInfo.selectOption}
+                                                                            options={searchInfo.selectOption}
                                                                             onChange={this.handleChangeParentInfo(searchInfo.name)}
                                                                             placeholder={searchInfo.placeholder}
                                                                         />
@@ -303,7 +303,7 @@ class SearchProduct extends React.Component {
 
                             </form>
                             <Button variant="contained" className={classes.customButtons} color="secondary"
-                                    onClick={this.sina(this.state.search)}>
+                                    onClick={this.handler(this.state.search)}>
                                 جستجو
                             </Button>
                             <br/>

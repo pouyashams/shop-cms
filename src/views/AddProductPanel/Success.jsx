@@ -205,8 +205,13 @@ class Success extends React.Component {
             },
         ],
     }
+
     refreshPage() {
         window.location.reload();
+    }
+
+    componentDidUpdate() {
+        ReactDOM.findDOMNode(this).scrollIntoView(0);
     }
 
     render() {

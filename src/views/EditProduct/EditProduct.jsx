@@ -235,6 +235,12 @@ class EditProduct extends React.Component {
         },
         searchInfo: [
             {
+                name: "name",
+                searchType: "textField",
+                labelText: "نام کالا :",
+                placeholder: "-------------------------"
+            },
+            {
                 name: "code",
                 searchType: "textField",
                 labelText: "شناسه کالا :",
@@ -246,12 +252,7 @@ class EditProduct extends React.Component {
                 labelText: "تعداد کالا :",
                 placeholder: "-------------------------"
             },
-            {
-                name: "name",
-                searchType: "textField",
-                labelText: "نام کالا :",
-                placeholder: "-------------------------"
-            },
+
             {
                 name: "registerDateFrom",
                 searchType: "numberFormat",

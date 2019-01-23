@@ -11,6 +11,7 @@ import Button from '@material-ui/core/Button';
 import SearchProduct from '../../components/SearchProduct/SearchProduct'
 import moment from 'jalali-moment'
 import TableWithAction from "../../components/Table/TableWithAction";
+import axios from "axios";
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -150,28 +151,32 @@ class Confirmation extends React.Component {
         searchInfo: [
 
             {
-                name: "code",
+                name: "number",
                 searchType: "textField",
-                labelText: "شناسه کالا :",
-                placeholder: "---------------------"
+                labelText: "شماره :",
+                placeholder: "------------------------"
             },
-
             {
                 name: "paymentStatus",
                 searchType: "select",
                 labelText: "وضعیت پرداخت :",
-                placeholder: "-----------------------"
+                placeholder: "-----------------------",
+                selectOption: [{value: 'paymentIsDone', label: 'پرداخت شده'},
+                    {value: 'paymentIsNotDone', label: 'پرداخت نشده'},]
             },
 
             {
                 name: "accessStatus",
                 searchType: "select",
                 labelText: "وضعیت تایید :",
-                placeholder: "-----------------------"
+                placeholder: "-----------------------",
+                selectOption: [{value: 'accepted', label: 'تایید شده'},
+                    {value: 'notAccepted', label: 'تایید نشده'},]
+
             },
 
             {
-                name: "fromDate",
+                name: "registerDateFrom",
                 searchType: "numberFormat",
                 labelText: "از تاریخ :",
                 placeholder: moment().locale('fa').format('YYYY/MM/DD'),
@@ -180,7 +185,7 @@ class Confirmation extends React.Component {
 
             },
             {
-                name: "toDate",
+                name: "registerDateTo",
                 searchType: "numberFormat",
                 labelText: "تا تاریخ :",
                 placeholder: moment().locale('fa').format('YYYY/MM/DD'),
@@ -390,10 +395,53 @@ class Confirmation extends React.Component {
         ],
     }
 
+    searchItemProduct() {
+        // console.log("sina")
+        // console.log(this.state.search)
+        var data = {
+            "number": "",
+            "paymentStatus": "",
+            "accessStatus": "",
+            "registerDateFrom": "",
+            "registerDateTo": "",
+        }
+        for (var i = 0; i < this.state.search.length; i++) {
+            // console.log(1)
+            // console.log(this.state.search)
+            if (this.state.search[i].name === "number") {
+                data.number = this.state.search[i].value;
+            } else if (this.state.search[i].name === "paymentStatus") {
+                data.paymentStatus = this.state.search[i].value;
+            } else if (this.state.search[i].name === "accessStatus") {
+                data.accessStatus = this.state.search[i].value;
+            } else if (this.state.search[i].name === "registerDateFrom") {
+                data.registerDateFrom = this.state.search[i].value;
+            } else if (this.state.search[i].name === "registerDateTo") {
+                data.registerDateTo = this.state.search[i].value;
+            }
+        }
+        axios.post(``,
+            data)
+            .then(res => {
+                const dataTable = []
+                this.setState({
+                    "dataTable": res.data,
+                    "dataTableInfo": res.data
+
+                });
+                // this.state.dataTable = dataTable;
+                // this.showNotification("tc", "عملیات با موفقیت انجام شد!  ", "success")
+
+            }).catch((error) => {
+            // console.log(error)
+            // this.showNotification("tc", "عملیات انجام نشد!", "danger")
+        });
+
+    };
+
     handleChangeSearch = search => {
         this.state.search = search
     }
-
     render() {
         const {classes} = this.props;
         return (
