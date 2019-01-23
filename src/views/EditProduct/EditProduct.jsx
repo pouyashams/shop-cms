@@ -16,6 +16,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import Snackbar from "components/Snackbar/Snackbar.jsx";
+
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from 'react-select';
 import Table from '@material-ui/core/Table';
@@ -28,6 +30,7 @@ import {Input, LocaleProvider, Upload, Icon, Modal} from 'antd';
 import 'antd/dist/antd.css';
 import faIR from 'antd/lib/locale-provider/fa_IR';
 import axios from "axios";
+import AddAlert from "@material-ui/icons/AddAlert";
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -173,8 +176,12 @@ const styles = theme => ({
 
 class EditProduct extends React.Component {
     state = {
+        color: 'warning',
+        text: '',
+        alertStyle: 'info',
+        tc: false,
         lastProductItemAttributeInfo: null,
-        productItemAttributeInfoList :[],
+        productItemAttributeInfoList: [],
         resData: null,
         selectedOption: "",
         productItemInfoList: {
@@ -327,6 +334,9 @@ class EditProduct extends React.Component {
         dataTable: [],
         dialogData: [],
         suplier: [],
+        selectedSuplier: {
+            label: "------"
+        },
         dataTableDialog: [
             {
                 "part1":
@@ -374,23 +384,17 @@ class EditProduct extends React.Component {
         }
 
         var tool = this.state.resData.productItemInfo.productAttributeItemList.length;
-        console.log("salaammm")
-        console.log(tool)
-        console.log("salaammm")
-
         this.state.resData.productItemInfo.productAttributeItemList.forEach(function (productAttributeItem, index) {
-            console.log("2")
             var selected = {}
             var selectedProductAttribute = productAttributeItem.productAttributeCategory;
             var productAttributeList = selectedProductAttribute.productAttributeList;
             var productAttributeInfoList = [];
             productAttributeList.forEach(function (productAttribute) {
-                console.log("3")
                 var infoooo = {
                     value: productAttribute.identifier + '#' + selectedProductAttribute.identifier,
                     label: productAttribute.attributeValue
                 }
-                if(productAttribute.identifier === productAttributeItem.productAttribute.identifier){
+                if (productAttribute.identifier === productAttributeItem.productAttribute.identifier) {
                     selected = infoooo;
                 }
                 productAttributeInfoList.push(infoooo);
@@ -400,10 +404,8 @@ class EditProduct extends React.Component {
                 productAttributeInfoList: productAttributeInfoList,
                 categoryName: selectedProductAttribute.categoryName,
                 categoryIdentifier: selectedProductAttribute.identifier,
-                selectedAttribue : selected
+                selectedAttribue: selected
             }
-
-            console.log(itemInfo)
 
             if (info.item1 === null) {
                 info.item1 = itemInfo;
@@ -422,9 +424,9 @@ class EditProduct extends React.Component {
                 lastProductItemAttributeInfo = info.item1;
             }
         });
-        console.log(lastProductItemAttributeInfo)
-        console.log(productItemAttributeInfoList)
-        this.setState({lastProductItemAttributeInfo,productItemAttributeInfoList});
+        // console.log(lastProductItemAttributeInfo)
+        // console.log(productItemAttributeInfoList)
+        this.setState({lastProductItemAttributeInfo, productItemAttributeInfoList});
     }
 
     handleChangePrice = input => event => {
@@ -443,6 +445,7 @@ class EditProduct extends React.Component {
         this.state.productItemInfoList.numberOfProduct = event.target.value;
     }
     handleChangeSupplier = (selectedOption) => {
+        this.state.selectedSuplier = selectedOption;
         this.state.productItemInfoList.productItemSupplier.identifier = selectedOption.value;
     }
 
@@ -471,16 +474,10 @@ class EditProduct extends React.Component {
                 data.registerDateTo = this.state.search[i].value;
             }
         }
-        // console.log("peofv")
-        // console.log(data)
-        // console.log(data)
-        // console.log(111)
         axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-product-item`,
             data)
             .then(res => {
-                // console.log(res.data)
                 const dataTable = []
-
                 this.setState({"dataTable": res.data});
                 // this.state.dataTable = dataTable;
                 // this.showNotification("tc", "عملیات با موفقیت انجام شد!  ", "success")
@@ -512,38 +509,105 @@ class EditProduct extends React.Component {
             data)
             .then(res => {
                 this.state.resData = res.data[0]
-                console.log(res.data[0])
+                // console.log(res.data[0])
                 var suplier = [];
+                var selectedSuplier = {};
                 var fileList = [];
                 this.state.productItemInfoList.productItemSupplier.identifier = res.data[0].productItemInfo.productItemSupplier.identifier;
                 suplier.push({
                     value: res.data[0].productItemInfo.productItemSupplier.identifier,
                     label: res.data[0].productItemInfo.productItemSupplier.name
                 })
-                // console.log(res.data[0])
-                // console.log(1)
-                // console.log(res.data[0].productItemInfo.productItemImageBase64List)
+                selectedSuplier = suplier[0];
                 for (var i = 0; i < res.data[0].productItemInfo.productItemImageBase64List.length; i++) {
                     var imagejson = {
-                        // name: "photo_2018-12-26_13-28-26" + i + ".jpg",
-                        // type: "image/jpg",
                         uid: "rc-upload-1548016815471" + i,
                         url: "data:image/jpg;base64," + res.data[0].productItemInfo.productItemImageBase64List[i]
                     }
-                    // console.log(22)
-                    // console.log(imagejson)
                     fileList.push(imagejson)
+
                 }
-                // console.log(res.data[0])
-                // console.log(suplier)
                 this.showattributeData()
 
-                this.setState({open: true, dialogData: res.data[0], suplier: suplier, fileList: fileList});
+                this.setState({
+                    open: true,
+                    dialogData: res.data[0],
+                    name: res.data[0].name,
+                    suplier: suplier,
+                    selectedSuplier: selectedSuplier,
+                    fileList: fileList,
+                    productItemInfoList: res.data[0].productItemInfo
+                });
 
             }).catch((error) => {
             // this.showNotification("tc", "عملیات انجام نشد!", "danger")
         });
     };
+
+    handleChangeSelection = (selectedOption) => {
+
+        var value = selectedOption !== null ? selectedOption.value : null;
+        var label = selectedOption !== null ? selectedOption.label : null;
+        if (value !== null) {
+            var values = value.split('#');
+            var info = {
+                productAttributeCategory: {
+                    identifier: values[1]
+                },
+                productAttribute: {
+                    identifier: values[0]
+                }
+            };
+
+            var productItemAttributeInfoList = this.state.productItemAttributeInfoList;
+            var lastProductItemAttributeInfo = this.state.lastProductItemAttributeInfo;
+
+            for (var i = 0; i < productItemAttributeInfoList.length; i++) {
+                if (productItemAttributeInfoList[i].item1.selectedAttribue.value.split('#')[1] == values[1]) {
+                    productItemAttributeInfoList[i].item1.selectedAttribue = selectedOption;
+                }
+                if (productItemAttributeInfoList[i].item2.selectedAttribue.value.split('#')[1] == values[1]) {
+                    productItemAttributeInfoList[i].item2.selectedAttribue = selectedOption;
+                }
+            }
+
+            if (lastProductItemAttributeInfo != null) {
+                if (lastProductItemAttributeInfo.selectedAttribue.value.split('#')[1] == values[1]) {
+                    lastProductItemAttributeInfo.selectedAttribue = selectedOption;
+                }
+            }
+            var productAttributeItemList = this.state.productItemInfoList.productAttributeItemList;
+            for (var i = 0; i < productAttributeItemList.length; i++) {
+                if (productAttributeItemList[i].productAttributeCategory.identifier === info.productAttributeCategory.identifier) {
+                    productAttributeItemList[i].productAttribute = info.productAttribute;
+                    break;
+                }
+            }
+            this.setState({productItemAttributeInfoList, lastProductItemAttributeInfo, productAttributeItemList})
+        }
+    }
+
+    componentWillUnmount() {
+        var id = window.setTimeout(null, 0);
+        while (id--) {
+            window.clearTimeout(id);
+        }
+    }
+
+    showNotification(place, text, alertStyle) {
+        var x = [];
+        x[place] = true;
+        x['text'] = text;
+        x['alertStyle'] = alertStyle;
+        this.setState(x);
+        this.alertTimeout = setTimeout(
+            function () {
+                x[place] = false;
+                this.setState(x);
+            }.bind(this),
+            6000
+        );
+    }
 
     handleClosePic = () => {
         this.setState({openPic: false});
@@ -553,18 +617,22 @@ class EditProduct extends React.Component {
     };
     handleSave = () => {
         const data = this.state.productItemInfoList;
+        // console.log("sinaaaa");
+        // console.log(data);
+        // console.log("pouyaaa");
         axios.post(`http://shop.isuncharge.com/isunshop/update/product-item`,
             data)
             .then(res => {
                 if (res.data.success) {
-                    // this.showNotification("tc", "عملیات با موفقیت انجام شد!  ", "success")
+                    this.showNotification("tc", "عملیات با موفقیت انجام شد!  ", "success");
+                    this.searchItemProduct();
+                    this.setState({open: false});
                 } else {
-                    // this.showNotification("tc", "عملیات انجام نشد!", "danger")
+                    this.showNotification("tc", "عملیات انجام نشد!", "danger")
                 }
             }).catch((error) => {
-            // this.showNotification("tc", "عملیات انجام نشد!", "danger")
+            this.showNotification("tc", "عملیات انجام نشد!", "danger")
         });
-        this.setState({open: false});
     };
     handleCancel = () => this.setState({previewVisible: false})
 
@@ -577,25 +645,28 @@ class EditProduct extends React.Component {
 
     handleChange = ({fileList}) => this.setState({fileList})
 
+
     pushImage() {
-        const {productItemInfo} = this.props;
+        const {productItemInfoList} = this.state;
         const productItemImageList = [];
         if (this.state.fileList.length !== 0) {
-            this.state.fileList.map(productItemInfo => (
-                productItemImageList.push(
-                    {
-                        url: productItemInfo.thumbUrl,
-                        type: productItemInfo.type,
-                        name: productItemInfo.name,
-                        uid: productItemInfo.uid,
-                    }
-                ))
-            )
+            this.state.fileList.map(file => (
+                file.url !== undefined ?
+                    productItemImageList.push(file.url.substr(22)) : null
+            ))
+            for (let i = 0; i < this.state.fileList.length; i++) {
+                const base64 = this.state.fileList[i].thumbUrl
+                if (base64 !== undefined) {
+                    productItemImageList.push(base64.substr(23))
+                }
+            }
         }
-        // productItemInfo.productItemImageList = productItemImageList
-        // console.log("1")
-        // console.log(productItemInfo.productItemImageList)
-    };
+        // console.log(productItemImageList.length)
+        // console.log(productItemInfoList.productItemImageBase64List)
+        productItemInfoList.productItemImageBase64List = productItemImageList;
+        // console.log(13)
+        // console.log(productItemInfoList.productItemImageBase64List)
+    }
 
     render() {
         const {previewVisible, previewImage, fileList} = this.state;
@@ -607,7 +678,7 @@ class EditProduct extends React.Component {
             </div>
         );
         const {classes} = this.props;
-        const text = <h6 className={classes.cardTitleWhite}>نام کالا</h6>;
+        const text = <h6 className={classes.cardTitleWhite}>{this.state.name} : نام کالا</h6>;
         const textBtnSave = <h6 className={classes.cardTitleWhite}>ذخیره</h6>;
         const textBtnCancel = <h6 className={classes.cardTitleWhite}>لغو</h6>;
         const {TextArea} = Input;
@@ -637,108 +708,108 @@ class EditProduct extends React.Component {
                             <div>
                                 {this.state.open === true ?
                                     <LocaleProvider locale={faIR}>
-                                    <Modal
-                                        width="1200px"
-                                        className={classes.Rtl}
-                                        visible={this.state.open}
-                                        onOk={this.handleSave}
-                                        onCancel={this.handleClose}
-                                        // closable={false}
-                                    >
+                                        <Modal
+                                            width="1200px"
+                                            className={classes.Rtl}
+                                            visible={this.state.open}
+                                            onOk={this.handleSave}
+                                            onCancel={this.handleClose}
+                                            // closable={false}
+                                        >
 
-                                        <card>
-                                            <CardBody>
-                                                <MuiThemeProvider theme={theme}>
-                                                    <div dir="rtl">
-                                                        <Card
-                                                            style={{
-                                                                backgroundColor: "#f6f8f7",
-                                                            }}
-                                                        >
-                                                            <CardHeader color="warning">
-                                                                <h4 className={classes.cardTitleWhite}>{text}</h4>
-                                                            </CardHeader>
-                                                            <CardBody>
-                                                                <form>
+                                            <card>
+                                                <CardBody>
+                                                    <MuiThemeProvider theme={theme}>
+                                                        <div dir="rtl">
+                                                            <Card
+                                                                style={{
+                                                                    backgroundColor: "#f6f8f7",
+                                                                }}
+                                                            >
+                                                                <CardHeader color="warning">
+                                                                    <h4 className={classes.cardTitleWhite}>{text}</h4>
+                                                                </CardHeader>
+                                                                <CardBody>
                                                                     <form>
-                                                                        <FormControlLabel
-                                                                            style={{
-                                                                                marginTop: theme.spacing.unit * 2,
-                                                                            }}
-                                                                            control={
-                                                                                <NumberFormat
-                                                                                    // thousandSeparator={true}
-                                                                                    customInput={Input}
-                                                                                    className={classes.inputStyleN}
-                                                                                    // value={productItemInfo.price}
-                                                                                    placeholder="---------------------------"
-                                                                                    onChange={this.handleChangePrice()}
-                                                                                    // format="###,###,###"
-                                                                                    defaultValue={this.state.dialogData.productItemInfo.price}
-                                                                                    variant="outlined"
-                                                                                    margin="normal"
-                                                                                    required
-                                                                                />
-                                                                            }
-                                                                            label={"قیمت (تومان): "}
-                                                                            labelPlacement="start"
-                                                                        />
-                                                                        <FormControlLabel
-                                                                            style={{
-                                                                                marginTop: theme.spacing.unit * 2,
-                                                                            }}
-                                                                            control={
-                                                                                <Input
-                                                                                    placeholder="-------------------------------"
-                                                                                    className={classes.inputStyleN}
-                                                                                    onChange={this.handleChangeCode()}
-                                                                                    defaultValue={this.state.dialogData.productItemInfo.code}
-                                                                                />
-                                                                            }
-                                                                            label={"شناسه ی کالا: "}
-                                                                            labelPlacement="start"
-                                                                        />
-                                                                        <FormControlLabel
-                                                                            style={{
-                                                                                marginTop: theme.spacing.unit * 2,
-                                                                            }}
-                                                                            control={
-                                                                                <Input
-                                                                                    placeholder="-------------------------------"
-                                                                                    type="number"
-                                                                                    className={classes.inputStyleN}
-                                                                                    onChange={this.handleChangeNumberOfProduct()}
-                                                                                    defaultValue={this.state.dialogData.productItemInfo.numberOfProduct}
-                                                                                />
-                                                                            }
-                                                                            label={"تعداد کالا: "}
-                                                                            labelPlacement="start"
-                                                                        />
+                                                                        <form>
+                                                                            <FormControlLabel
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                }}
+                                                                                control={
+                                                                                    <NumberFormat
+                                                                                        // thousandSeparator={true}
+                                                                                        customInput={Input}
+                                                                                        className={classes.inputStyleN}
+                                                                                        // value={productItemInfo.price}
+                                                                                        placeholder="---------------------------"
+                                                                                        onChange={this.handleChangePrice()}
+                                                                                        // format="###,###,###"
+                                                                                        defaultValue={this.state.dialogData.productItemInfo.price}
+                                                                                        variant="outlined"
+                                                                                        margin="normal"
+                                                                                        required
+                                                                                    />
+                                                                                }
+                                                                                label={"قیمت (تومان): "}
+                                                                                labelPlacement="start"
+                                                                            />
+                                                                            <FormControlLabel
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                }}
+                                                                                control={
+                                                                                    <Input
+                                                                                        placeholder="-------------------------------"
+                                                                                        className={classes.inputStyleN}
+                                                                                        onChange={this.handleChangeCode()}
+                                                                                        defaultValue={this.state.dialogData.productItemInfo.code}
+                                                                                    />
+                                                                                }
+                                                                                label={"شناسه ی کالا: "}
+                                                                                labelPlacement="start"
+                                                                            />
+                                                                            <FormControlLabel
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                }}
+                                                                                control={
+                                                                                    <Input
+                                                                                        placeholder="-------------------------------"
+                                                                                        type="number"
+                                                                                        className={classes.inputStyleN}
+                                                                                        onChange={this.handleChangeNumberOfProduct()}
+                                                                                        defaultValue={this.state.dialogData.productItemInfo.numberOfProduct}
+                                                                                    />
+                                                                                }
+                                                                                label={"تعداد کالا: "}
+                                                                                labelPlacement="start"
+                                                                            />
 
-                                                                        <FormControlLabel
-                                                                            style={{
-                                                                                marginTop: theme.spacing.unit * 2,
-                                                                            }}
-                                                                            control={
-                                                                                <Select
-                                                                                    className={classes.inputSelectionSup}
-                                                                                    isDisabled={false}
-                                                                                    isLoading={false}
-                                                                                    isClearable={true}
-                                                                                    isRtl={true}
-                                                                                    isSearchable={true}
-                                                                                    value={this.state.productItemInfoList.productItemSupplier.identifier}
-                                                                                    options={this.state.suplier}
-                                                                                    onChange={this.handleChangeSupplier}
-                                                                                    placeholder="----------------------"
-                                                                                />
-                                                                            }
-                                                                            label={"فروشنده محصول: "}
-                                                                            labelPlacement="start"
-                                                                        />
+                                                                            <FormControlLabel
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                }}
+                                                                                control={
+                                                                                    <Select
+                                                                                        className={classes.inputSelectionSup}
+                                                                                        isDisabled={false}
+                                                                                        isLoading={false}
+                                                                                        isClearable={true}
+                                                                                        isRtl={true}
+                                                                                        isSearchable={true}
+                                                                                        value={this.state.selectedSuplier}
+                                                                                        options={this.state.suplier}
+                                                                                        onChange={this.handleChangeSupplier}
+                                                                                        placeholder="----------------------"
+                                                                                    />
+                                                                                }
+                                                                                label={"فروشنده محصول: "}
+                                                                                labelPlacement="start"
+                                                                            />
 
-                                                                    </form>
-                                                                    <form>
+                                                                        </form>
+                                                                        <form>
                                                     <TextArea
                                                         rows={11}
                                                         defaultValue={this.state.dialogData.productItemInfo.description}
@@ -747,61 +818,112 @@ class EditProduct extends React.Component {
                                                         placeholder="توضیحات"
 
                                                     />
-                                                                    </form>
-                                                                </form>
-                                                                <GridContainer>
-                                                                    <GridItem xs={12} sm={12} md={12}>
-                                                                        <form>
-                                                                            <header
-                                                                                style={{
-                                                                                    marginTop: theme.spacing.unit * 2,
-                                                                                    marginBottom: theme.spacing.unit * 2,
-                                                                                }}
-                                                                            >
-                                                                                <Muted>عکس مورد نظر وارد کنید:</Muted>
-                                                                            </header>
-                                                                            <LocaleProvider locale={faIR}>
-                                                                                <div className="clearfix">
-                                                                                    <Upload
-                                                                                        accept={".jpg"}
-                                                                                        action="//jsonplaceholder.typicode.com/posts/"
-                                                                                        listType="picture-card"
-                                                                                        fileList={fileList}
-                                                                                        onPreview={this.handlePreview}
-                                                                                        onChange={this.handleChange}
-                                                                                    >
-                                                                                        {fileList.length >= 10 ? null : uploadButton}
-                                                                                    </Upload>
-                                                                                    <Modal
-                                                                                        visible={previewVisible} footer={null}
-                                                                                        onCancel={this.handleCancel}>
-                                                                                        <img alt="example"
-                                                                                             style={{width: '100%'}}
-                                                                                             src={previewImage}/>
-                                                                                    </Modal>
-                                                                                </div>
-                                                                            </LocaleProvider>
-                                                                            {this.pushImage()}
                                                                         </form>
-                                                                    </GridItem>
-                                                                </GridContainer>
-                                                            </CardBody>
-                                                        </Card>
-                                                        <Card
-                                                            style={{
-                                                                backgroundColor: "#f6f8f7",
-                                                            }}
-                                                        >
-                                                            <CardHeader plain color="warning">
-                                                                <h4 className={classes.cardTitleWhite}>اصلاح ویژگی های کالا</h4>
-                                                            </CardHeader>
-                                                            <CardBody>
-                                                                <Table className={classes.table}>
-                                                                    <TableBody>
-                                                                        {this.state.productItemAttributeInfoList.map((attribute, index) => (
-                                                                                <TableRow key={attribute.item1.identifier}>
-                                                                                    <TableCell component="th" scope="row">
-                                                                                        {attribute.item1.categoryName}
+                                                                    </form>
+                                                                    <GridContainer>
+                                                                        <GridItem xs={12} sm={12} md={12}>
+                                                                            <form>
+                                                                                <header
+                                                                                    style={{
+                                                                                        marginTop: theme.spacing.unit * 2,
+                                                                                        marginBottom: theme.spacing.unit * 2,
+                                                                                    }}
+                                                                                >
+                                                                                    <Muted>عکس مورد نظر وارد
+                                                                                        کنید:</Muted>
+                                                                                </header>
+                                                                                <LocaleProvider locale={faIR}>
+                                                                                    <div className="clearfix">
+                                                                                        <Upload
+                                                                                            accept={".jpg"}
+                                                                                            action="//jsonplaceholder.typicode.com/posts/"
+                                                                                            listType="picture-card"
+                                                                                            fileList={fileList}
+                                                                                            onPreview={this.handlePreview}
+                                                                                            onChange={this.handleChange}
+                                                                                        >
+                                                                                            {fileList.length >= 10 ? null : uploadButton}
+                                                                                        </Upload>
+                                                                                        <Modal
+                                                                                            visible={previewVisible}
+                                                                                            footer={null}
+                                                                                            onCancel={this.handleCancel}>
+                                                                                            <img alt="example"
+                                                                                                 style={{width: '100%'}}
+                                                                                                 src={previewImage}/>
+                                                                                        </Modal>
+                                                                                    </div>
+                                                                                </LocaleProvider>
+                                                                                {this.pushImage()}
+                                                                            </form>
+                                                                        </GridItem>
+                                                                    </GridContainer>
+                                                                </CardBody>
+                                                            </Card>
+                                                            <Card
+                                                                style={{
+                                                                    backgroundColor: "#f6f8f7",
+                                                                }}
+                                                            >
+                                                                <CardHeader plain color="warning">
+                                                                    <h4 className={classes.cardTitleWhite}>اصلاح ویژگی
+                                                                        های کالا</h4>
+                                                                </CardHeader>
+                                                                <CardBody>
+                                                                    <Table className={classes.table}>
+                                                                        <TableBody>
+                                                                            {this.state.productItemAttributeInfoList.map((attribute, index) => (
+                                                                                    <TableRow
+                                                                                        key={attribute.item1.identifier}>
+                                                                                        <TableCell component="th"
+                                                                                                   scope="row">
+                                                                                            {attribute.item1.categoryName}
+                                                                                        </TableCell>
+                                                                                        <TableCell>
+                                                                                            <Select
+                                                                                                className={classes.inputSelection}
+                                                                                                isDisabled={false}
+                                                                                                isLoading={false}
+                                                                                                isClearable={true}
+                                                                                                isRtl={true}
+                                                                                                isSearchable={true}
+                                                                                                name="color"
+                                                                                                options={attribute.item1.productAttributeInfoList}
+                                                                                                value={attribute.item1.selectedAttribue}
+                                                                                                defaultValue={attribute.item1.selectedAttribue}
+                                                                                                onChange={this.handleChangeSelection}
+                                                                                                placeholder="انتخاب کنید..."
+                                                                                            />
+                                                                                        </TableCell>
+                                                                                        <TableCell component="th"
+                                                                                                   scope="row">
+                                                                                            {attribute.item2.categoryName}
+                                                                                        </TableCell>
+                                                                                        <TableCell>
+                                                                                            <Select
+                                                                                                className={classes.inputSelection}
+                                                                                                isDisabled={false}
+                                                                                                isLoading={false}
+                                                                                                isClearable={true}
+                                                                                                isRtl={true}
+                                                                                                isSearchable={true}
+                                                                                                name="color"
+                                                                                                options={attribute.item2.productAttributeInfoList}
+                                                                                                value={attribute.item2.selectedAttribue}
+                                                                                                defaultValue={attribute.item2.selectedAttribue}
+                                                                                                onChange={this.handleChangeSelection}
+                                                                                                placeholder="انتخاب کنید .."
+                                                                                            />
+                                                                                        </TableCell>
+                                                                                    </TableRow>
+                                                                                )
+                                                                            )}
+                                                                            {this.state.lastProductItemAttributeInfo !== null
+                                                                                ?
+                                                                                <TableRow>
+                                                                                    <TableCell component="th"
+                                                                                               scope="row">
+                                                                                        {this.state.lastProductItemAttributeInfo.categoryName}
                                                                                     </TableCell>
                                                                                     <TableCell>
                                                                                         <Select
@@ -812,77 +934,40 @@ class EditProduct extends React.Component {
                                                                                             isRtl={true}
                                                                                             isSearchable={true}
                                                                                             name="color"
-                                                                                            options={attribute.item1.productAttributeInfoList}
-                                                                                            value={attribute.item1.selectedAttribue}
-                                                                                            defaultValue={attribute.item1.selectedAttribue}
-                                                                                            onChange={this.handleChangeSelection}
-                                                                                            placeholder="انتخاب کنید..."
-                                                                                        />
-                                                                                    </TableCell>
-                                                                                    <TableCell component="th" scope="row">
-                                                                                        {attribute.item2.categoryName}
-                                                                                    </TableCell>
-                                                                                    <TableCell>
-                                                                                        <Select
-                                                                                            className={classes.inputSelection}
-                                                                                            isDisabled={false}
-                                                                                            isLoading={false}
-                                                                                            isClearable={true}
-                                                                                            isRtl={true}
-                                                                                            isSearchable={true}
-                                                                                            name="color"
-                                                                                            options={attribute.item2.productAttributeInfoList}
-                                                                                            value={attribute.item2.selectedAttribue}
-                                                                                            defaultValue={attribute.item2.selectedAttribue}
+                                                                                            options={this.state.lastProductItemAttributeInfo.productAttributeInfoList}
+                                                                                            value={this.state.lastProductItemAttributeInfo.selectedAttribue}
+                                                                                            defaultValue={this.state.lastProductItemAttributeInfo.selectedAttribue}
                                                                                             onChange={this.handleChangeSelection}
                                                                                             placeholder="انتخاب کنید .."
                                                                                         />
                                                                                     </TableCell>
+                                                                                    <TableCell/>
+                                                                                    <TableCell/>
                                                                                 </TableRow>
-                                                                            )
-                                                                        )}
-                                                                        {this.state.lastProductItemAttributeInfo !== null
-                                                                            ?
-                                                                            <TableRow>
-                                                                                <TableCell component="th" scope="row">
-                                                                                    {this.state.lastProductItemAttributeInfo.categoryName}
-                                                                                </TableCell>
-                                                                                <TableCell>
-                                                                                    <Select
-                                                                                        className={classes.inputSelection}
-                                                                                        isDisabled={false}
-                                                                                        isLoading={false}
-                                                                                        isClearable={true}
-                                                                                        isRtl={true}
-                                                                                        isSearchable={true}
-                                                                                        name="color"
-                                                                                        options={this.state.lastProductItemAttributeInfo.productAttributeInfoList}
-                                                                                        value={this.state.lastProductItemAttributeInfo.selectedAttribue}
-                                                                                        defaultValue={this.state.lastProductItemAttributeInfo.selectedAttribue}
-                                                                                        onChange={this.handleChangeSelection}
-                                                                                        placeholder="انتخاب کنید .."
-                                                                                    />
-                                                                                </TableCell>
-                                                                                <TableCell/>
-                                                                                <TableCell/>
-                                                                            </TableRow>
-                                                                            : null
-                                                                        }
-                                                                    </TableBody>
-                                                                </Table>
-                                                            </CardBody>
-                                                        </Card>
-                                                    </div>
-                                                </MuiThemeProvider>
-                                            </CardBody>
-                                        </card>
-                                    </Modal>
+                                                                                : null
+                                                                            }
+                                                                        </TableBody>
+                                                                    </Table>
+                                                                </CardBody>
+                                                            </Card>
+                                                        </div>
+                                                    </MuiThemeProvider>
+                                                </CardBody>
+                                            </card>
+                                        </Modal>
                                     </LocaleProvider>
                                     : null
                                 }
                             </div>
                         </CardBody>
                     </Card>
+                    <Snackbar
+                        place="tc"
+                        color={this.state.alertStyle}
+                        icon={AddAlert}
+                        message={this.state.text}
+                        open={this.state.tc}
+                    />
                 </div>
             </MuiThemeProvider>
 
