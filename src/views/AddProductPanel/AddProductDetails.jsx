@@ -20,6 +20,8 @@ import NumberFormat from 'react-number-format';
 import {Input, Upload, Icon, Modal, LocaleProvider} from 'antd';
 import 'antd/dist/antd.css';
 import faIR from 'antd/lib/locale-provider/fa_IR';
+import IconButton from "@material-ui/core/IconButton";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -242,6 +244,16 @@ class AddProductDetails extends React.Component {
         console.log(this.props.productItemInfo);
         this.props.productItemInfo.description = event.target.value;
     }
+    deleteRow = () => {
+        console.log(1111111)
+        console.log(this.props.productItemInfo.index)
+        this.props.getIndex(this.props.productItemInfo.index);
+        // this.setState({
+        //     previewImage: file.url || file.thumbUrl,
+        //     previewVisible: true,
+        // });
+    }
+
 
     render() {
         const {previewVisible, previewImage, fileList} = this.state;
@@ -265,8 +277,20 @@ class AddProductDetails extends React.Component {
                                     backgroundColor: "#f6f8f7",
                                 }}
                             >
-                                <CardHeader plain color={this.props.color}>
+                                <CardHeader plain color={this.props.productItemInfo.color}>
                                     <h4 className={classes.cardTitleWhite}>تعریف مشخصات کالا</h4>
+                                    {this.props.productItemInfo.index !== 1 ?
+                                    <div onClick={this.deleteRow}
+                                         style={{
+                                             float: 'left',
+                                             marginTop: theme.spacing.unit * -4,
+                                         }}
+                                    >
+                                        <IconButton aria-label="Delete">
+                                            <DeleteIcon fontSize="small"/>
+                                        </IconButton>
+                                    </div>
+                                    :null}
                                 </CardHeader>
                                 <CardBody>
                                     <GridContainer>
@@ -407,7 +431,7 @@ class AddProductDetails extends React.Component {
                                     backgroundColor: "#f6f8f7",
                                 }}
                             >
-                                <CardHeader plain color={this.props.color}>
+                                <CardHeader plain color={this.props.productItemInfo.color}>
                                     <h4 className={classes.cardTitleWhite}>تعریف ویژگی های کالا</h4>
                                 </CardHeader>
                                 <CardBody>
