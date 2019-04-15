@@ -10,6 +10,10 @@ import Button from '@material-ui/core/Button';
 import NumberFormat from 'react-number-format';
 import {Input} from 'antd';
 import 'antd/dist/antd.css';
+import CardBody from "components/Card/CardBody.jsx";
+import Card from "components/Card/Card.jsx";
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -87,7 +91,7 @@ const styles = theme => ({
     customInputStyle: {
         marginRight: theme.spacing.unit,
         width: 650,
-        direction: 'rtl'
+        direction: 'rtl',
     },
 
     inputStyleNUmber: {
@@ -103,8 +107,8 @@ const styles = theme => ({
     inputStyle: {
         height: "38px",
         marginTop: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 1,
-        marginLeft: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 2,
+        marginLeft: theme.spacing.unit * 20,
         marginBottom: theme.spacing.unit * 2,
         width: 150,
         direction: 'rtl'
@@ -112,10 +116,13 @@ const styles = theme => ({
     customButtons: {
         height: "36px",
         width: 100,
-        marginRight: theme.spacing.unit * 8,
+        marginRight: theme.spacing.unit * 4,
         marginTop: theme.spacing.unit * 2,
-        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-        background: "linear-gradient(60deg, #125a62, #125a62)"
+        background: "rgb(92,184,92)",
+        color: "#fff",
+        "&:hover": {
+            background: "rgb(70, 142, 70)",
+        },
 
     },
 
@@ -141,10 +148,10 @@ const styles = theme => ({
     inputSelectionSup: {
         height: "38px",
         marginTop: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 1,
-        marginLeft: theme.spacing.unit * 2,
+        marginRight: theme.spacing.unit * 2,
+        marginLeft: theme.spacing.unit * 14,
         marginBottom: theme.spacing.unit * 2,
-        width: 160,
+        width: 150,
     },
     table: {
         minWidth: 250,
@@ -189,8 +196,7 @@ class SearchProduct extends React.Component {
         }
     }
     handleChangeParentInfo = name => (selectedOption) => {
-        // console.log(name);
-        // console.log(selectedOption);
+        console.log(selectedOption)
         if (selectedOption !== null) {
             var searchInfo = {
                 name: name,
@@ -211,9 +217,22 @@ class SearchProduct extends React.Component {
                 console.log(12321)
                 console.log(this.state.search)
             }
+        } else {
+            for (var i = 0; i < this.state.search.length; i++) {
+                if (this.state.search[i].name === name) {
+                    this.state.search.splice(i, 1);
+                    break;
+                }
+            }
         }
         // this.state.searchInfo.name = name;
         // this.state.searchInfo.value = selectedOption;
+    }
+
+    componentDidMount() {
+        if (this.props.search !== null) {
+            this.state.search = this.props.search;
+        }
     }
 
     render() {
@@ -222,93 +241,153 @@ class SearchProduct extends React.Component {
             <MuiThemeProvider theme={theme}>
                 <div dir="rtl">
                     <GridContainer>
-                        <GridItem xs={12} sm={12} md={12}>
-                            <form>
+                        <card
+                        >
+                            <CardBody
+                                style={{
+                                    backgroundColor: "rgb(242, 244, 249)",
+                                    boxShadow: "rgba(22, 22, 23, 0.12) 0px 12px 20px -10px, rgba(12, 12, 12, 0.21) 0px 4px 20px 0px, rgba(0, 0, 0, 0) 0px 7px 8px -5px",
+                                    marginBottom: theme.spacing.unit * 6
+                                }}
+                            >
+                                <GridItem xs={12} sm={12} md={12}>
+                                    <form>
+                                        {this.props.searchInfo.map(searchInfo => (
+                                            searchInfo.searchType === "textField" ?
+                                                <FormControl
+                                                    component="fieldset">
+                                                    < FormControlLabel
 
-                                {this.props.searchInfo.map(searchInfo => (
-                                    searchInfo.searchType === "textField" ?
-                                        < FormControlLabel
-                                            control={
-                                                <Input
-                                                    placeholder={searchInfo.placeholder}
-                                                    className={classes.inputStyle}
-                                                    onChange={this.handelechangeWithValue(searchInfo.name)}
-                                                    defaultValue={searchInfo.defaultValue}
-                                                />
-                                            }
-                                            label={searchInfo.labelText}
-                                            labelPlacement="start"
-                                        /> : (
-                                            searchInfo.searchType === "numberTextField" ?
-                                                <FormControlLabel
-                                                    style={{
-                                                        marginTop: theme.spacing.unit * 2,
-                                                    }}
-                                                    control={
-                                                        <Input
-                                                            placeholder={searchInfo.placeholder}
-                                                            className={classes.inputStyle}
-                                                            onChange={this.handelechangeWithValue(searchInfo.name)}
-                                                            defaultValue={searchInfo.defaultValue}
-                                                            type="number"
-
-                                                        />
-                                                    }
-                                                    label={searchInfo.labelText}
-                                                    labelPlacement="start"
-                                                /> : (
-                                                    searchInfo.searchType === "numberFormat" ?
-                                                        <FormControlLabel
-                                                            control={
-                                                                <NumberFormat
-                                                                    customInput={Input}
-                                                                    value={searchInfo.defaultValue}
-                                                                    className={classes.inputStyle}
-                                                                    format={searchInfo.format}
+                                                        control={
+                                                            <div
+                                                                style={{
+                                                                    marginRight: theme.spacing.unit * -5,
+                                                                }}
+                                                            >
+                                                                <FormLabel
+                                                                    style={{
+                                                                        marginRight: theme.spacing.unit * 2,
+                                                                    }}
+                                                                    component="legend">{searchInfo.labelText}</FormLabel>
+                                                                <Input
                                                                     placeholder={searchInfo.placeholder}
+                                                                    className={classes.inputStyle}
                                                                     onChange={this.handelechangeWithValue(searchInfo.name)}
-                                                                    variant="outlined"
-                                                                    margin="normal"
-                                                                    required
+                                                                    defaultValue={searchInfo.defaultValue}
                                                                 />
+                                                            </div>
+                                                        }
+                                                    />
+                                                </FormControl>
+                                                : (
+                                                    searchInfo.searchType === "numberTextField" ?
+                                                        <FormControl component="fieldset">
+                                                            <FormControlLabel
+                                                                style={{
+                                                                    marginTop: theme.spacing.unit * 2,
+                                                                }}
+                                                                control={<div
+                                                                    style={{
+                                                                        marginRight: theme.spacing.unit * -5,
+                                                                    }}
+                                                                >
+                                                                    <FormLabel
+                                                                        style={{
+                                                                            marginRight: theme.spacing.unit * 2,
+                                                                        }}
+                                                                        component="legend">{searchInfo.labelText}</FormLabel>
+                                                                    <Input
+                                                                        placeholder={searchInfo.placeholder}
+                                                                        className={classes.inputStyle}
+                                                                        onChange={this.handelechangeWithValue(searchInfo.name)}
+                                                                        defaultValue={searchInfo.defaultValue}
+                                                                        type="number"
+                                                                    />
+                                                                </div>
 
-                                                            }
-                                                            label={searchInfo.labelText}
-                                                            labelPlacement="start"
-                                                        /> : (
-                                                            searchInfo.searchType === "select" ?
-                                                                <FormControlLabel
-                                                                    control={
-                                                                        <Select
-                                                                            className={classes.inputSelectionSup}
-                                                                            isDisabled={false}
-                                                                            isLoading={false}
-                                                                            isClearable={true}
-                                                                            isRtl={true}
-                                                                            isSearchable={true}
-                                                                            options={searchInfo.selectOption}
-                                                                            onChange={this.handleChangeParentInfo(searchInfo.name)}
-                                                                            placeholder={searchInfo.placeholder}
-                                                                        />
-                                                                    }
-                                                                    label={searchInfo.labelText}
-                                                                    labelPlacement="start"
-                                                                /> : null
+                                                                }
+                                                            />
+                                                        </FormControl>
+                                                        : (
+                                                            searchInfo.searchType === "numberFormat" ?
+                                                                <FormControl component="fieldset">
+                                                                    <FormControlLabel
+                                                                        control={
+                                                                            <div
+                                                                                style={{
+                                                                                    marginRight: theme.spacing.unit * -5,
+                                                                                }}
+                                                                            >
+                                                                                <FormLabel
+                                                                                    style={{
+                                                                                        marginRight: theme.spacing.unit * 2,
+                                                                                    }}
+                                                                                    component="legend">{searchInfo.labelText}</FormLabel>
+                                                                                <NumberFormat
+                                                                                    customInput={Input}
+                                                                                    value={searchInfo.defaultValue}
+                                                                                    className={classes.inputStyle}
+                                                                                    format={searchInfo.format}
+                                                                                    placeholder={searchInfo.placeholder}
+                                                                                    onChange={this.handelechangeWithValue(searchInfo.name)}
+                                                                                    variant="outlined"
+                                                                                    margin="normal"
+                                                                                    required
+                                                                                />
+                                                                            </div>
+                                                                        }
+                                                                    />
+                                                                </FormControl>
+                                                                : (
+                                                                    searchInfo.searchType === "select" ?
+                                                                        <FormControl component="fieldset">
+                                                                            <FormControlLabel
+
+                                                                                control={
+                                                                                    <div
+                                                                                        style={{
+                                                                                            marginRight: theme.spacing.unit * -5,
+                                                                                        }}
+                                                                                    >
+                                                                                        <FormLabel
+                                                                                            style={{
+                                                                                                marginRight: theme.spacing.unit * 2,
+                                                                                                marginBottom: "24px",
+                                                                                            }}
+                                                                                            component="legend">{searchInfo.labelText}</FormLabel>
+                                                                                        <Select
+                                                                                            className={classes.inputSelectionSup}
+                                                                                            isDisabled={false}
+                                                                                            isLoading={false}
+                                                                                            isClearable={true}
+                                                                                            isRtl={true}
+                                                                                            isSearchable={true}
+                                                                                            options={searchInfo.selectOption}
+                                                                                            onChange={this.handleChangeParentInfo(searchInfo.name)}
+                                                                                            placeholder={searchInfo.placeholder}
+                                                                                        />
+                                                                                    </div>
+
+                                                                                }
+                                                                            />
+                                                                        </FormControl> : null
+                                                                )
                                                         )
                                                 )
-                                        )
-                                ))}
-                                {/*{console.log("pouya")}*/}
-                                {/*{console.log(this.state.search)}*/}
+                                        ))}
+                                        {/*{console.log("pouya")}*/}
+                                        {/*{console.log(this.state.search)}*/}
 
-                            </form>
-                            <Button variant="contained" className={classes.customButtons} color="secondary"
-                                    onClick={this.handler(this.state.search)}>
-                                جستجو
-                            </Button>
-                            <br/>
-                            <br/>
-                        </GridItem>
+                                    </form>
+                                </GridItem>
+                                <Button variant="contained" className={classes.customButtons} color="secondary"
+                                        onClick={this.handler(this.state.search)}>
+                                    جستجو
+                                </Button>
+                            </CardBody>
+                        </card>
+
+
                     </GridContainer>
                 </div>
             </MuiThemeProvider>

@@ -10,9 +10,10 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import Select from 'react-select';
-import {Input} from 'antd';
+import {Input,Form} from 'antd';
 import 'antd/dist/antd.css';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -57,8 +58,9 @@ const styles = theme => ({
         marginBottom: "0"
     },
     cardTitleWhite: {
+        textAlign: 'right',
         color: "#FFFFFF",
-        marginTop: "0px",
+        marginRight: "10px",
         minHeight: "auto",
         fontWeight: "300",
         fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
@@ -67,8 +69,11 @@ const styles = theme => ({
     },
     customColor: {
         margin: theme.spacing.unit,
-        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-        background: "linear-gradient(60deg, #023c93, #0b0049)"
+        background: "rgb(92,184,92)",
+        color:"#fff",
+        "&:hover": {
+            background: "rgb(70, 142, 70)",
+        },
     },
     tableActionButton: {
         width: "27px",
@@ -148,7 +153,7 @@ class ProductDetails extends React.Component {
                 <div dir="rtl">
                     <Card>
                         <CardHeader color="primary">
-                            <h4 className={classes.cardTitleWhite}>اطلاعات اولیه کالا</h4>
+                            <h4 className={classes.cardTitleWhite}> اطلاعات اولیه کالا</h4>
                         </CardHeader>
                         <CardBody>
                             <GridContainer>

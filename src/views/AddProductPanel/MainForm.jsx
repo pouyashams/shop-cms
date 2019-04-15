@@ -7,6 +7,8 @@ import Snackbar from "components/Snackbar/Snackbar.jsx";
 import AddAlert from "@material-ui/icons/AddAlert";
 import {withStyles} from '@material-ui/core/styles';
 import ReactDOM from "react-dom";
+import LinearProgress from '@material-ui/core/LinearProgress';
+import getAccessToken from "../../routes/ACCESS_TOKEN";
 
 const styles = theme => ({
     root: {
@@ -29,6 +31,8 @@ const styles = theme => ({
 
 class MainForm extends Component {
     state = {
+        linearProgress: false,
+        index: 1,
         previewVisible: false,
         previewImage: '',
         fileList: [{
@@ -60,17 +64,22 @@ class MainForm extends Component {
         },
         productItemInfoList: [
             {
+                taxation: '',
+                name: '',
+                index: 1,
+                englishName: '',
                 code: '',
                 price: '',
                 numberOfProduct: '',
                 description: '',
-                productItemImageBase64List:[],
+                productItemImageBase64List: [],
                 productItemImageList: [],
                 productItemSupplier: {
                     identifier: '',
                     label: ''
                 },
                 productAttributeItemList: [],
+                color: 'warning'
             }
         ],
         color: 'warning',
@@ -78,6 +87,23 @@ class MainForm extends Component {
         alertStyle: 'info',
         tc: false,
     }
+
+    getIndex = (index) => {
+        var productItemInfoList = this.state.productItemInfoList;
+        console.log(13122331)
+        console.log(productItemInfoList)
+        console.log(productItemInfoList.length)
+        for (var i = 0; i < productItemInfoList.length; i++) {
+            if (productItemInfoList[i].index === index) {
+                productItemInfoList.splice(i, 1);
+                break;
+            }
+        }
+        this.setState({
+            productItemInfoList
+        })
+    }
+
     nextStep = async () => {
         const {step} = this.state
         if (step === 1) {
@@ -155,25 +181,37 @@ class MainForm extends Component {
         if (step === 2) {
             var productItemInfoList = this.state.productItemInfoList;
             for (var i = 0; i < productItemInfoList.length; i++) {
-                if (this.state.productItemInfoList[i].price === null || this.state.productItemInfoList[i].price === '') {
-                    this.showNotification("tc", "قیمت کالا را وارد کنید!", "danger");
+                if (this.state.productItemInfoList[i].name === null || this.state.productItemInfoList[i].name === '') {
+                    this.showNotification("tc", "نام کالا را وارد کنید!", "danger");
+                    return;
+                }
+                if (this.state.productItemInfoList[i].englishName === null || this.state.productItemInfoList[i].englishName === '') {
+                    this.showNotification("tc", "نام کالا (انگلیسی) را وارد کنید!", "danger");
                     return;
                 }
                 if (this.state.productItemInfoList[i].code === null || this.state.productItemInfoList[i].code === '') {
                     this.showNotification("tc", "شناسه ی کالا را وارد کنید!", "danger");
                     return;
                 }
-
+                if (this.state.productItemInfoList[i].productItemSupplier.identifier === null || this.state.productItemInfoList[i].productItemSupplier.identifier === '') {
+                    this.showNotification("tc", "فروشنده کالا را انتخاب کنید!", "danger");
+                    return;
+                }
+                if (this.state.productItemInfoList[i].price === null || this.state.productItemInfoList[i].price === '') {
+                    this.showNotification("tc", "قیمت کالا را وارد کنید!", "danger");
+                    return;
+                }
+                if (this.state.productItemInfoList[i].taxation === null || this.state.productItemInfoList[i].taxation === '') {
+                    this.showNotification("tc", "مالیات  را وارد کنید!", "danger");
+                    return;
+                }
                 if (this.state.productItemInfoList[i].numberOfProduct === null || this.state.productItemInfoList[i].numberOfProduct === '') {
                     console.log(11)
                     console.log(this.state.productItemInfoList[i].numberOfProduct)
                     this.showNotification("tc", "تعداد کالا را وارد کنید!", "danger");
                     return;
                 }
-                if (this.state.productItemInfoList[i].productItemSupplier.identifier === null || this.state.productItemInfoList[i].productItemSupplier.identifier === '') {
-                    this.showNotification("tc", "فروشنده کالا را انتخاب کنید!", "danger");
-                    return;
-                }
+
                 if (this.state.productItemInfoList[i].description === null || this.state.productItemInfoList[i].description === '') {
                     this.showNotification("tc", "توضیحات کالا را وارد کنید!", "danger");
                     return;
@@ -186,31 +224,35 @@ class MainForm extends Component {
                     this.showNotification("tc", "حداقل یک ویژگی انتخاب کنید!", "danger");
                     return;
                 }
-
-
-                var productCategory = this.state.productCategory;
-                productCategory.identifier = this.state.selectedProductCategoryId;
-                const data = {
-                    name: this.state.name,
-                    productCategory: productCategory,
-                    productItemInfoList: productItemInfoList,
-                }
-                console.log(data);
-                axios.post(`http://shop.isuncharge.com/isunshop/register/product`, data)
-                    .then(res => {
-                        if (res.data.success) {
-                            this.setState({
-                                step: step + 1
-                            })
-                            this.showNotification("tc", "کالا با موفقیت ثبت شد!", "success");
-                        } else {
-                            this.showNotification("tc", "خطایی در پردازش اطلاعات رخ داده است!", "danger")
-                        }
-                    }).catch((error) => {
-                    console.log(error)
-                    this.showNotification("tc", "خطایی در پردازش اطلاعات رخ داده است!", "danger")
-                });
             }
+            this.setState({
+                linearProgress: true,
+            });
+            var productCategory = this.state.productCategory;
+            productCategory.identifier = this.state.selectedProductCategoryId;
+            const data = {
+                name: this.state.name,
+                productCategory: productCategory,
+                productItemInfoList: productItemInfoList,
+            }
+            var access_token = await getAccessToken();
+            axios.post(`http://shop.isuncharge.com/isunshop/register/product` + access_token, data)
+                .then(res => {
+                    if (res.data.success) {
+                        this.setState({
+                            linearProgress: false,
+                            step: step + 1
+                        })
+                        this.showNotification("tc", "کالا با موفقیت ثبت شد!", "success");
+                    } else {
+                        linearProgress: false,
+                            this.showNotification("tc", "خطایی در پردازش اطلاعات رخ داده است!", "danger")
+                    }
+                }).catch((error) => {
+                linearProgress: false,
+
+                    this.showNotification("tc", "خطایی در پردازش اطلاعات رخ داده است!", "danger")
+            });
         }
     }
 
@@ -256,10 +298,18 @@ class MainForm extends Component {
     }
 
 
-    componentDidMount() {
-        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-info`)
+    async componentDidMount() {
+        this.setState({
+            linearProgress: true,
+        });
+        var access_token = await getAccessToken();
+
+        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-info` + access_token)
             .then(res => {
                 if (res.data.success) {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     const data = res.data;
                     var productCategoryList = [];
                     var productCategorys = data.productCategoryList;
@@ -281,9 +331,15 @@ class MainForm extends Component {
                     });
                 }
                 else {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
                 }
             }).catch((error) => {
+            this.setState({
+                linearProgress: false,
+            });
             this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
         });
     };
@@ -295,9 +351,12 @@ class MainForm extends Component {
         })
     }
     add = () => {
+        var productItemInfoList = this.state.productItemInfoList;
+        var index = this.state.index + 1;
         var i = this.state.i;
         i = i % 2;
         var emptyProduct = {
+            index: index,
             code: '',
             price: '',
             numberOfProduct: '',
@@ -309,10 +368,9 @@ class MainForm extends Component {
             },
             color: this.state.colors[i]
         };
-        var productItemInfoList = this.state.productItemInfoList;
         productItemInfoList.push(emptyProduct)
         i = i + 1;
-        this.setState({productItemInfoList, i})
+        this.setState({productItemInfoList, i, index})
     }
     handleChange = input => event => {
         this.setState({[input]: event.target.value})
@@ -333,7 +391,21 @@ class MainForm extends Component {
                         productCategoryOptions={this.state.productCategoryOptions}
                         labelWidth={this.state.labelWidth}
                         name={this.state.name}
+                        linearProgress={this.state.linearProgress}
                     />
+                    {
+                        this.state.linearProgress === true ?
+                            <div style={{
+                                position: 'fixed',
+                                zIndex: '100',
+                                top: '0px',
+                                width: '108%',
+                                left: '-33px'
+                            }}>
+                                <LinearProgress/>
+                            </div>
+                            : null
+                    }
                     <Snackbar
                         place="tc"
                         color={this.state.alertStyle}
@@ -355,7 +427,21 @@ class MainForm extends Component {
                         lastProductItemAttributeInfo={this.state.lastProductItemAttributeInfo}
                         handelechangeWithValue={this.handelechangeWithValue}
                         color={this.state.color}
+                        getIndex={this.getIndex}
                     />
+                    {
+                        this.state.linearProgress === true ?
+                            <div style={{
+                                position: 'fixed',
+                                zIndex: '100',
+                                top: '0px',
+                                width: '108%',
+                                left: '-33px'
+                            }}>
+                                <LinearProgress/>
+                            </div>
+                            : null
+                    }
                     <Snackbar
                         place="tc"
                         color={this.state.alertStyle}

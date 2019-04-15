@@ -83,7 +83,7 @@ const dangerBoxShadow = {
 };
 const roseBoxShadow = {
   boxShadow:
-    "0 4px 20px 0px rgba(0, 0, 0, 0.14), 0 7px 10px -5px rgba(233, 30, 99, 0.4)"
+    "0 4px 20px 0px rgb(59, 100, 111), 0 7px 10px -5px rgb(46, 60, 64))"
 };
 
 const warningCardHeader = {
@@ -103,11 +103,11 @@ const infoCardHeader = {
   ...infoBoxShadow
 };
 const primaryCardHeader = {
-  background: "linear-gradient(60deg, #023c93, #0b0049)",
+  background: "linear-gradient(60deg, #2f608a, #2f608a)",
   ...primaryBoxShadow
 };
 const roseCardHeader = {
-  background: "linear-gradient(60deg, #ec407a, #5D0F28)",
+  background: "linear-gradient(60deg, #3795b5, #33302b)",
   ...roseBoxShadow
 };
 

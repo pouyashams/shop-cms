@@ -19,11 +19,16 @@ import AddAlert from "@material-ui/icons/AddAlert";
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Input} from 'antd';
 import 'antd/dist/antd.css';
+import LinearProgress from '@material-ui/core/LinearProgress';
+
 
 const theme = createMuiTheme({
     direction: 'rtl',
 });
 const styles = theme => ({
+    root: {
+        flexGrow: 1,
+    },
     button: {
         margin: theme.spacing.unit,
     },
@@ -69,9 +74,11 @@ const styles = theme => ({
         textDecoration: "none"
     },
     customColor: {
-        margin: theme.spacing.unit,
-        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-        background: "linear-gradient(60deg, #023c93, #0b0049)"
+        background: "rgb(92,184,92)",
+        color:"#fff",
+        "&:hover": {
+            background: "rgb(70, 142, 70)",
+        },
     },
     tableActionButton: {
         width: "27px",
@@ -97,6 +104,7 @@ const styles = theme => ({
 
 class ProductCategoryAttribute extends React.Component {
     state = {
+        linearProgress: false,
         name: '',
         elements: [],
         countOfElements: 0,
@@ -122,6 +130,7 @@ class ProductCategoryAttribute extends React.Component {
                 }
             }
         }
+
         this.sendProductAttributeCategory();
     }
 
@@ -148,6 +157,9 @@ class ProductCategoryAttribute extends React.Component {
     }
 
     sendProductAttributeCategory() {
+        this.setState({
+            linearProgress: true,
+        });
         for (var i = 0; i < this.state.elements.length; i++) {
             let value = this.state.elements[i].value;
             const attributeValue = {
@@ -163,6 +175,9 @@ class ProductCategoryAttribute extends React.Component {
             data)
             .then(res => {
                 if (res.data.success) {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "عملیات با موفقیت انجام شد!", "success")
                     this.setState({
                         name: '',
@@ -170,12 +185,19 @@ class ProductCategoryAttribute extends React.Component {
                         countOfElements: 0
                     });
                 } else {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "عملیات انجام نشد! ", "danger")
                 }
             }).catch((error) => {
+            this.setState({
+                linearProgress: false,
+            });
             this.showNotification("tc", "عملیات انجام نشد! ", "danger")
         });
     };
+
     handleChangeName = () => event => {
         var name = event.target.value;
         this.setState({name});
@@ -209,11 +231,28 @@ class ProductCategoryAttribute extends React.Component {
         this.setState({elements, countOfElements});
     };
 
+    changeItem(eleemnt){
+        alert(eleemnt.id);
+    }
+
     render() {
         const {classes} = this.props;
 
         return (
             <MuiThemeProvider theme={theme}>
+                {
+                    this.state.linearProgress === true ?
+                        <div style={{
+                            position: 'fixed',
+                            zIndex: '100',
+                            top: '0px',
+                            width: '108%',
+                            left: '-33px'
+                        }}>
+                            <LinearProgress/>
+                        </div>
+                        : null
+                }
                 <div dir="rtl">
                     <Card>
                         <CardHeader color="primary">
@@ -241,45 +280,52 @@ class ProductCategoryAttribute extends React.Component {
                                 </GridItem>
                             </GridContainer>
 
-                                <GridContainer>
-                                    <GridItem xs={12} sm={12} md={12}>
-                                        <form className={classes.container}
-                                              style={{marginTop: theme.spacing.unit * 8,}}
-                                        >
-                                            {this.state.elements.map(element => (
+                            <GridContainer>
+                                <GridItem xs={12} sm={12} md={12}>
+                                    <form className={classes.container}
+                                          style={{marginTop: theme.spacing.unit * 8,}}
+                                    >
+                                        {this.state.elements.map(element => (
                                             <GridContainer key={element.id}>
-                                            <div onClick={this.handleCloseElement(element.id)}
-                                                 style={{
-                                                     marginRight: theme.spacing.unit * 8,
-                                                     marginBottom: theme.spacing.unit * 2
-                                                 }}
-                                            >
-                                                <IconButton aria-label="Delete">
-                                                    <DeleteIcon fontSize="small"/>
-                                                </IconButton>
-                                            </div>
-                                                    <Input
-                                                        value={element.value}
-                                                        id={"element" + element.id}
-                                                        placeholder="مقدار ویژگی"
-                                                        className={classes.inputStyle}
-                                                        onChange={this.handleChange()}
-                                                    />
+                                                <div onClick={this.handleCloseElement(element.id)}
+                                                     style={{
+                                                         marginRight: theme.spacing.unit * 8,
+                                                         marginBottom: theme.spacing.unit * 2
+                                                     }}
+                                                >
+                                                    <IconButton aria-label="Delete">
+                                                        <DeleteIcon fontSize="small"/>
+                                                    </IconButton>
+                                                </div>
+                                                <Input
+                                                    value={element.value}
+                                                    id={"element" + element.id}
+                                                    placeholder="مقدار ویژگی"
+                                                    className={classes.inputStyle}
+                                                    onChange={this.handleChange()}
+                                                />
                                             </GridContainer>
-                                            ))}
-                                        </form>
-                                    </GridItem>
-                                </GridContainer>
+                                        ))}
+                                    </form>
+                                </GridItem>
+                            </GridContainer>
 
                         </CardBody>
                         <CardFooter>
-                            <Button variant="contained" className={classes.customColor} color="secondary"
+                            <Button variant="contained" className={classes.customColor}
+                                    style={{
+                                        marginRight:"15px"
+                                     }}
                                     onClick={this.onButtonClick.bind(this)}>
                                 ذخیره کردن
                             </Button>
 
                             <Button variant="fab" color="primary" aria-label="اضافه کردن مقادیر"
-                                    className={classes.customColor} onClick={this.handleClickOnAddElement.bind(this)}>
+                                    className={classes.customColor}
+                                    style={{
+                                        marginLeft:"15px"
+                                    }}
+                                    onClick={this.handleClickOnAddElement.bind(this)}>
                                 <AddIcon titleAccess="اضافه کردن مقادیر" viewBox="اضافه کردن مقادیر"/>
                             </Button>
                         </CardFooter>

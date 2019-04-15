@@ -8,9 +8,8 @@ import Card from "components/Card/Card.jsx";
 import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
-// import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@material-ui/icons/Add';
 import AddProductDetails from "./AddProductDetails";
-// import axios from "axios";
 // import Stepper from '@material-ui/core/Stepper';
 // import Step from '@material-ui/core/Step';
 // import StepLabel from '@material-ui/core/StepLabel';
@@ -72,14 +71,28 @@ const styles = theme => ({
     },
     customColor: {
         margin: theme.spacing.unit,
-        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-        background: "linear-gradient(60deg, #023c93, #0b0049)"
+        background: "rgb(92,184,92)",
+        color:"#fff",
+        "&:hover": {
+            background: "rgb(70, 142, 70)",
+        },
+    },
+    customColorAdd: {
+        margin: theme.spacing.unit,
+        background: "#ff9933",
+        color: "#fff",
+        "&:hover": {
+            background: "#e28c13",
+        },
     },
     customButtons: {
         margin: theme.spacing.unit,
         // margin: "0px -550px 0px 0px;",
-        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-        background: "linear-gradient(60deg, #023c93, #0b0049)"
+        background: "rgb(200, 0, 0)",
+        color: "#fff",
+        "&:hover": {
+            background: "rgb(104, 0, 0)",
+        },
     },
     tableActionButton: {
         width: "27px",
@@ -115,7 +128,7 @@ const styles = theme => ({
 class AddProductDetailsPanel extends React.Component {
 
     saveAndContinue = (e) => {
-        e.preventDefault()
+        // e.preventDefault()
         this.props.nextStep()
     }
 
@@ -153,6 +166,8 @@ class AddProductDetailsPanel extends React.Component {
                                             previewVisible={this.props.previewVisible}
                                             previewImage={this.props.previewImage}
                                             fileList={this.props.fileList}
+                                            getIndex={this.props.getIndex}
+                                            linearProgressDown={this.props.linearProgressDown}
                                         />
                                     ))}
                                 </GridItem>
@@ -166,10 +181,10 @@ class AddProductDetailsPanel extends React.Component {
                                     مرحله بعدی
                                 </Button>
 
-                                {/*<Button variant="fab" color="primary" aria-label="اضافه کردن مقادیر"*/}
-                                {/*className={classes.customColor} onClick={this.props.add}>*/}
-                                {/*<AddIcon titleAccess="اضافه کردن مقادیر" viewBox="اضافه کردن مقادیر"/>*/}
-                                {/*</Button>*/}
+                                <Button variant="fab" color="primary" aria-label="اضافه کردن مقادیر"
+                                        className={classes.customColorAdd} onClick={this.props.add}>
+                                    <AddIcon titleAccess="اضافه کردن مقادیر" viewBox="اضافه کردن مقادیر"/>
+                                </Button>
 
                                 <Button variant="contained" className={classes.customButtons}
                                         color="secondary"

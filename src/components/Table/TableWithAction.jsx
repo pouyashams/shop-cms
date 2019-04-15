@@ -7,11 +7,16 @@ import Button from '@material-ui/core/Button';
 import { render } from "react-dom";
 import "./index.css";
 
+
+
+
 const theme = createMuiTheme({
     direction: 'rtl',
 });
 const styles = theme => ({
     root: {
+        display: 'flex',
+    }, root: {
         display: 'flex',
     },
     formControl: {
@@ -180,6 +185,8 @@ class TableWithAction extends React.Component {
                         <ReactTable
                             noDataText="اطلاعاتی وجود ندارد"
                             style={{
+                                // backgroundColor: "#b9c9fe",
+                                boxShadow: "rgba(22, 22, 23, 0.12) 0px 12px 20px -10px, rgba(12, 12, 12, 0.21) 0px 4px 20px 0px, rgba(0, 0, 0, 0) 0px 7px 8px -5px",
                                 textAlign: "center"
                             }}
                             data={this.props.dataTable}
@@ -197,7 +204,10 @@ class TableWithAction extends React.Component {
                                     <div>
                                         <ReactTable
                                             style={{
-                                                textAlign: "center"
+                                                // backgroundColor: "#b9c9fe",
+                                                textAlign: "center",
+                                                // backgroundColor: "#7a7a7a",
+
                                             }}
                                             noDataText="اطلاعاتی وجود ندارد"
                                             data={this.props.dataTableInfo}
@@ -214,10 +224,13 @@ class TableWithAction extends React.Component {
                         />
                         : <ReactTable
                             style={{
+                                // backgroundColor: "#b9c9fe",
+                                boxShadow: "rgba(22, 22, 23, 0.12) 0px 12px 20px -10px, rgba(12, 12, 12, 0.21) 0px 4px 20px 0px, rgba(0, 0, 0, 0) 0px 7px 8px -5px",
                                 textAlign: "center"
                             }}
+                            p={console.log("pouya")}
                             noDataText="اطلاعاتی وجود ندارد"
-                            resizable={false}
+                            // resizable={false}
                             data={this.props.dataTable}
                             ofText='از'
                             pageText='صفحه'
@@ -227,7 +240,7 @@ class TableWithAction extends React.Component {
                             defaultPageSize={5}
                             columns={columns}
                             showPagination={this.props.Pagination}
-                            className="-striped -highlight"
+                            // className="-striped -highlight"
                         />
                     }
                 </div>

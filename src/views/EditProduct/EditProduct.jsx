@@ -17,7 +17,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Snackbar from "components/Snackbar/Snackbar.jsx";
-
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Select from 'react-select';
 import Table from '@material-ui/core/Table';
@@ -31,6 +30,7 @@ import 'antd/dist/antd.css';
 import faIR from 'antd/lib/locale-provider/fa_IR';
 import axios from "axios";
 import AddAlert from "@material-ui/icons/AddAlert";
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -176,7 +176,8 @@ const styles = theme => ({
 
 class EditProduct extends React.Component {
     state = {
-        color: 'warning',
+        categoryList: [],
+        color: 'primary',
         text: '',
         alertStyle: 'info',
         tc: false,
@@ -229,10 +230,7 @@ class EditProduct extends React.Component {
         //
         // ],
         treeTable: false,
-        search: {
-            registerDateFrom: moment().locale('fa').format('YYYY/MM/DD'),
-            registerDateTo: moment().locale('fa').format('YYYY/MM/DD')
-        },
+        search: [],
         searchInfo: [
             {
                 name: "name",
@@ -240,19 +238,6 @@ class EditProduct extends React.Component {
                 labelText: "نام کالا :",
                 placeholder: "-------------------------"
             },
-            {
-                name: "code",
-                searchType: "textField",
-                labelText: "شناسه کالا :",
-                placeholder: "------------------------"
-            },
-            {
-                name: "numberOfProduct",
-                searchType: "textField",
-                labelText: "تعداد کالا :",
-                placeholder: "-------------------------"
-            },
-
             {
                 name: "registerDateFrom",
                 searchType: "numberFormat",
@@ -263,12 +248,33 @@ class EditProduct extends React.Component {
 
             },
             {
+                name: "code",
+                searchType: "textField",
+                labelText: "شناسه کالا:",
+                placeholder: "------------------------"
+            },
+            {
+                name: "numberOfProduct",
+                searchType: "textField",
+                labelText: "تعداد کالا:",
+                placeholder: "-------------------------"
+            },
+
+
+            {
                 name: "registerDateTo",
                 searchType: "numberFormat",
                 labelText: "تا تاریخ :",
                 placeholder: moment().locale('fa').format('YYYY/MM/DD'),
                 defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
                 format: "####/##/##",
+            },
+            {
+                name: "category",
+                searchType: "select",
+                labelText: "دسته کالا :",
+                placeholder: "--------------------",
+                selectOption: [],
             },
         ],
         tableColumns: [{
@@ -431,13 +437,20 @@ class EditProduct extends React.Component {
     }
 
     handleChangePrice = input => event => {
-        this.state.productItemInfoList.price = event.target.value;
+        this.state.productItemInfoList.price = event.target.value.replace(/,/g, '');
     }
-
+    handleChangeTaxation = input => event => {
+        this.state.productItemInfoList.taxation = event.target.value.substr(1);
+    }
     handleChangeCode = input => event => {
         this.state.productItemInfoList.code = event.target.value;
     }
-
+    handleChangeName = input => event => {
+        this.state.productItemInfoList.name = event.target.value;
+    }
+    handleChangeEngName = input => event => {
+        this.state.productItemInfoList.englishName = event.target.value;
+    }
     handleChangeDescription = input => event => {
         this.state.productItemInfoList.description = event.target.value;
         // console.log(this.state.productItemInfoList)
@@ -451,6 +464,9 @@ class EditProduct extends React.Component {
     }
 
     searchItemProduct() {
+        this.setState({
+            linearProgress: true,
+        });
         // console.log("sina")
         // console.log(this.state.search)
         var data = {
@@ -479,13 +495,15 @@ class EditProduct extends React.Component {
             data)
             .then(res => {
                 const dataTable = []
-                this.setState({"dataTable": res.data});
-                // this.state.dataTable = dataTable;
-                // this.showNotification("tc", "عملیات با موفقیت انجام شد!  ", "success")
-
+                this.setState({
+                    linearProgress: false,
+                    "dataTable": res.data
+                });
             }).catch((error) => {
-            // console.log(error)
-            // this.showNotification("tc", "عملیات انجام نشد!", "danger")
+            this.setState({
+                linearProgress: false,
+            });
+            this.showNotification("tc", "جستجو نا موفق بود!", "danger")
         });
 
     };
@@ -503,8 +521,9 @@ class EditProduct extends React.Component {
     };
 
     handleClickOpen = code => {
-        // console.log("codeeeeeeee")
-        // console.log(code)
+        this.setState({
+            linearProgress: true,
+        });
         const data = {"code": code}
         axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-product-item-with-details`,
             data)
@@ -531,19 +550,76 @@ class EditProduct extends React.Component {
                 this.showattributeData()
 
                 this.setState({
+
                     open: true,
                     dialogData: res.data[0],
                     name: res.data[0].name,
                     suplier: suplier,
                     selectedSuplier: selectedSuplier,
                     fileList: fileList,
-                    productItemInfoList: res.data[0].productItemInfo
-                });
+                    productItemInfoList: res.data[0].productItemInfo,
+                    linearProgress: false,
 
+                });
             }).catch((error) => {
-            // this.showNotification("tc", "عملیات انجام نشد!", "danger")
+            linearProgress: false,
+                this.setState({
+                    linearProgress: false,
+                });
+            this.showNotification("tc", "! عملیات انجام نشد", "danger")
         });
     };
+
+
+    componentDidMount() {
+        this.setState({
+            linearProgress: true,
+        });
+        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-category-info`)
+            .then(res => {
+                if (res.data.success) {
+                    this.setState({
+                        linearProgress: false,
+                    });
+                    const categoryList = [];
+                    const data = res.data.productCategoryList;
+                    data.map(data => (
+                        categoryList.push(
+                            {value: data.identifier, label: data.productCategoryName})
+                    ))
+                    console.log(1)
+                    // console.log(categoryList)
+                    var searchInfo = this.state.searchInfo;
+                    console.log(searchInfo[5].selectOption)
+                    searchInfo[5].selectOption = categoryList;
+                    this.setState({
+                        searchInfo: searchInfo,
+                    });
+                } else {
+                    this.setState({
+                        linearProgress: false,
+                    });
+                    this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
+                }
+            }).catch((error) => {
+            this.setState({
+                linearProgress: false,
+            });
+            this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
+        });
+        var searchInfoFrom = {
+            name: 'registerDateFrom',
+            value: moment().locale('fa').format('YYYY/MM/DD')
+
+        };
+        var searchInfoTo = {
+            name: 'registerDateTo',
+            value: moment().locale('fa').format('YYYY/MM/DD')
+
+        };
+        this.state.search.push(searchInfoFrom);
+        this.state.search.push(searchInfoTo);
+    }
 
     handleChangeSelection = (selectedOption) => {
 
@@ -617,21 +693,30 @@ class EditProduct extends React.Component {
         this.setState({open: false});
     };
     handleSave = () => {
+        this.setState({
+            linearProgress: true,
+        });
         const data = this.state.productItemInfoList;
-        // console.log("sinaaaa");
-        // console.log(data);
-        // console.log("pouyaaa");
         axios.post(`http://shop.isuncharge.com/isunshop/update/product-item`,
             data)
             .then(res => {
                 if (res.data.success) {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "عملیات با موفقیت انجام شد!  ", "success");
                     this.searchItemProduct();
                     this.setState({open: false});
                 } else {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "عملیات انجام نشد!", "danger")
                 }
             }).catch((error) => {
+            this.setState({
+                linearProgress: false,
+            });
             this.showNotification("tc", "عملیات انجام نشد!", "danger")
         });
     };
@@ -685,16 +770,34 @@ class EditProduct extends React.Component {
         const {TextArea} = Input;
         return (
             <MuiThemeProvider theme={theme}>
+                {
+                    this.state.linearProgress === true ?
+                        <div style={{
+                            position: 'fixed',
+                            zIndex: '100',
+                            top: '0px',
+                            width: '108%',
+                            left: '-33px'
+                        }}>
+                            <LinearProgress/>
+                        </div>
+                        : null
+                }
                 <div dir="rtl">
                     <Card>
-                        <CardHeader plain color={"warning"}>
+                        <CardHeader plain color={"primary"}>
                             <h4 className={classes.cardTitleWhite}>به روز رسانی کالا</h4>
                         </CardHeader>
-                        <CardBody>
+                        <CardBody
+                            style={{
+                                padding: "1.9375rem 51px",
+                            }}
+                        >
                             <SearchProduct
                                 style={{
                                     marginTop: theme.spacing.unit * 2,
                                 }}
+                                search={this.state.search}
                                 searchInfo={this.state.searchInfo}
                                 handleChangeSearch={this.handleChangeSearch.bind(this)}
                             />
@@ -727,7 +830,7 @@ class EditProduct extends React.Component {
                                                                     backgroundColor: "#f6f8f7",
                                                                 }}
                                                             >
-                                                                <CardHeader color="warning">
+                                                                <CardHeader color="primary">
                                                                     <h4 className={classes.cardTitleWhite}>{text}</h4>
                                                                 </CardHeader>
                                                                 <CardBody>
@@ -738,8 +841,80 @@ class EditProduct extends React.Component {
                                                                                     marginTop: theme.spacing.unit * 2,
                                                                                 }}
                                                                                 control={
+                                                                                    <Input
+                                                                                        placeholder="-------------------------------"
+                                                                                        className={classes.inputStyleN}
+                                                                                        onChange={this.handleChangeName()}
+                                                                                        defaultValue={this.state.dialogData.productItemInfo.name}
+                                                                                    />
+                                                                                }
+                                                                                label={"نام کالا : "}
+                                                                                labelPlacement="start"
+                                                                            />
+                                                                            <FormControlLabel
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                }}
+                                                                                control={
+                                                                                    <Input
+                                                                                        placeholder="-------------------------------"
+                                                                                        className={classes.inputStyleN}
+                                                                                        onChange={this.handleChangeEngName()}
+                                                                                        defaultValue={this.state.dialogData.productItemInfo.englishName}
+                                                                                    />
+                                                                                }
+                                                                                label={"نام انگلیسی : "}
+                                                                                labelPlacement="start"
+                                                                            />
+                                                                            <FormControlLabel
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                }}
+                                                                                control={
+
                                                                                     <NumberFormat
-                                                                                        // thousandSeparator={true}
+                                                                                        prefix="%"
+                                                                                        customInput={Input}
+                                                                                        className={classes.inputStyleN}
+                                                                                        placeholder="---------------------------"
+                                                                                        onChange={this.handleChangeTaxation()}
+                                                                                        defaultValue={this.state.dialogData.productItemInfo.taxation}
+                                                                                        variant="outlined"
+                                                                                        margin="normal"
+                                                                                        required
+                                                                                    />
+                                                                                }
+                                                                                label={"مالیات : "}
+                                                                                labelPlacement="start"
+                                                                            />
+                                                                            <FormControlLabel
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                }}
+                                                                                control={
+                                                                                    <Select
+                                                                                        className={classes.inputSelectionSup}
+                                                                                        isDisabled={false}
+                                                                                        isLoading={false}
+                                                                                        isClearable={true}
+                                                                                        isRtl={true}
+                                                                                        isSearchable={true}
+                                                                                        value={this.state.selectedSuplier}
+                                                                                        options={this.state.suplier}
+                                                                                        onChange={this.handleChangeSupplier}
+                                                                                        placeholder="----------------------"
+                                                                                    />
+                                                                                }
+                                                                                label={"فروشنده محصول: "}
+                                                                                labelPlacement="start"
+                                                                            />
+                                                                            <FormControlLabel
+                                                                                style={{
+                                                                                    marginTop: theme.spacing.unit * 2,
+                                                                                }}
+                                                                                control={
+                                                                                    <NumberFormat
+                                                                                        thousandSeparator={true}
                                                                                         customInput={Input}
                                                                                         className={classes.inputStyleN}
                                                                                         // value={productItemInfo.price}
@@ -752,7 +927,7 @@ class EditProduct extends React.Component {
                                                                                         required
                                                                                     />
                                                                                 }
-                                                                                label={"قیمت (تومان): "}
+                                                                                label={"قیمت (ریال): "}
                                                                                 labelPlacement="start"
                                                                             />
                                                                             <FormControlLabel
@@ -784,28 +959,6 @@ class EditProduct extends React.Component {
                                                                                     />
                                                                                 }
                                                                                 label={"تعداد کالا: "}
-                                                                                labelPlacement="start"
-                                                                            />
-
-                                                                            <FormControlLabel
-                                                                                style={{
-                                                                                    marginTop: theme.spacing.unit * 2,
-                                                                                }}
-                                                                                control={
-                                                                                    <Select
-                                                                                        className={classes.inputSelectionSup}
-                                                                                        isDisabled={false}
-                                                                                        isLoading={false}
-                                                                                        isClearable={true}
-                                                                                        isRtl={true}
-                                                                                        isSearchable={true}
-                                                                                        value={this.state.selectedSuplier}
-                                                                                        options={this.state.suplier}
-                                                                                        onChange={this.handleChangeSupplier}
-                                                                                        placeholder="----------------------"
-                                                                                    />
-                                                                                }
-                                                                                label={"فروشنده محصول: "}
                                                                                 labelPlacement="start"
                                                                             />
 
@@ -866,7 +1019,7 @@ class EditProduct extends React.Component {
                                                                     backgroundColor: "#f6f8f7",
                                                                 }}
                                                             >
-                                                                <CardHeader plain color="warning">
+                                                                <CardHeader plain color="primary">
                                                                     <h4 className={classes.cardTitleWhite}>اصلاح ویژگی
                                                                         های کالا</h4>
                                                                 </CardHeader>

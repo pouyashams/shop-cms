@@ -1,20 +1,35 @@
 body {
-    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue",
-    Helvetica, Arial, "Lucida Grande", sans-serif;
+    font-family: "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
     font-weight: 300;
     font-size: 14px;
 }
 
-.ReactTable .rt-table {
-    overflow: hidden;
-}
-
-.ReactTable .rt-thead,
-.ReactTable .rt-tbody {
-    min-width: auto !important;
-}
-
 .ReactTable .rt-thead {
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
+    /*background-color: rgb(173, 191, 195);*/
+
+}
+
+.ReactTable .-headerGroups {
+    overflow-scrolling: auto;
+    background-color: rgb(49, 122, 129) !important;
+    /*font-weight:bold ;*/
+    
+    height: 40px;
+}
+
+.ReactTable .rt-tr-group {
+    overflow: hidden;
+    /*background-color: rgb(219, 238, 242) !important;*/
+}
+
+
+.ReactTable .pagination-bottom {
+    overflow: hidden;
+    /*background-color: #eaeffe !important;*/
+}
+
+.ReactTable .rt-th{
+    /*background-color: #eaeffe !important;*/
+    margin-top: 7px;
 }

@@ -10,6 +10,7 @@ import CardBody from "components/Card/CardBody.jsx";
 import CardFooter from "components/Card/CardFooter.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import FormGroup from '@material-ui/core/FormGroup';
+import {Input} from 'antd';
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -81,9 +82,12 @@ const styles = theme => ({
         margin: "8px -6px 0px 0px;"
     },
     inputStyle: {
+        height: "45px",
         marginLeft: theme.spacing.unit * 2,
-        height: "35px",
-        width: 140,
+        marginRight: theme.spacing.unit * 3,
+        marginBottom: theme.spacing.unit * 2,
+        marginTop: theme.spacing.unit * 2,
+        width: 150,
         direction: 'rtl'
     },
     formControl: {
@@ -132,7 +136,7 @@ class SaleInfoDetails extends React.Component {
                             <GridContainer>
                                 <GridItem>
                                     <FormGroup row>
-                                        <TextField
+                                        <Input
                                             placeholder="نام کاربری"
                                             className={classes.inputStyle}
                                             type="username"
@@ -142,7 +146,7 @@ class SaleInfoDetails extends React.Component {
                                             margin="normal"
                                             required
                                         />
-                                        <TextField
+                                        <Input
                                             placeholder="رمز عبور"
                                             className={classes.inputStyle}
                                             type="password"

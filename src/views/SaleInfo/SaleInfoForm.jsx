@@ -6,6 +6,7 @@ import axios from "axios";
 import Snackbar from "components/Snackbar/Snackbar.jsx";
 import AddAlert from "@material-ui/icons/AddAlert";
 import {withStyles} from '@material-ui/core/styles';
+import LinearProgress from '@material-ui/core/LinearProgress';
 
 const styles = theme => ({
     direction: 'rtl',
@@ -30,6 +31,7 @@ const styles = theme => ({
 
 class TableForm extends Component {
     state = {
+        linearProgress: false,
         dataOfSaleInfo: [],
         step: 1,
         name: null,
@@ -130,15 +132,21 @@ class TableForm extends Component {
                         dataOfSaleInfo: rows,
                         step: this.state.step + 1,
                         data: res.data,
+                        linearProgress: false,
                     })
                     let timer = setInterval(this.saleInfoTimer.bind(this), 60000 * 2);
                     this.state.timer = timer;
                 } else {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "نام کاربری یا رمز عبور اشتباه است! ", "danger")
                     return;
                 }
             }).catch((error) => {
-            console.log(error)
+            this.setState({
+                linearProgress: false,
+            });
             this.showNotification("tc", "نام کاربری یا رمز عبور اشتباه است! ", "danger")
             return;
         });
@@ -146,10 +154,16 @@ class TableForm extends Component {
     }
 
     saleInfoTimer() {
+        this.setState({
+            linearProgress: true,
+        });
         const data = {
             "userName": this.state.name,
             "password": this.state.password,
         }
+        this.setState({
+            linearProgress: true,
+        });
         axios.post(`http://shop.isuncharge.com/isunshop/report/all-sale-info`,
             data)
             .then(res => {
@@ -221,12 +235,20 @@ class TableForm extends Component {
                         reportDate: res.data.reportDate,
                         dataOfSaleInfo: rows,
                         data: res.data,
+                        linearProgress: false,
+
                     })
                 } else {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "مشکلی پیش آمده است! ", "danger")
                     return;
                 }
             }).catch((error) => {
+            this.setState({
+                linearProgress: false,
+            });
             this.showNotification("tc", "مشکلی پیش آمده است! ", "danger")
             return;
         });
@@ -272,6 +294,19 @@ class TableForm extends Component {
                         handleChange={this.handleChange}
                         handelechangeWithValue={this.handelechangeWithValue}
                     />
+                    {
+                        this.state.linearProgress === true ?
+                            <div style={{
+                                position: 'fixed',
+                                zIndex: '100',
+                                top: '0px',
+                                width: '108%',
+                                left: '-33px'
+                            }}>
+                                <LinearProgress/>
+                            </div>
+                            : null
+                    }
                     <Snackbar
                         place="tc"
                         color={this.state.alertStyle}
@@ -287,6 +322,19 @@ class TableForm extends Component {
                         summaryOfAllSaleInfo={this.state.summaryOfAllSaleInfo}
                         reportDate={this.state.reportDate}
                     />
+                    {
+                        this.state.linearProgress === true ?
+                            <div style={{
+                                position: 'fixed',
+                                zIndex: '100',
+                                top: '0px',
+                                width: '108%',
+                                left: '-33px'
+                            }}>
+                                <LinearProgress/>
+                            </div>
+                            : null
+                    }
                     <Snackbar
                         place="tc"
                         color={this.state.alertStyle}
@@ -296,7 +344,7 @@ class TableForm extends Component {
                     />
                 </div>
             default:
-                return <Success/>
+                return <SaleInfoDetails/>
         }
     }
 }

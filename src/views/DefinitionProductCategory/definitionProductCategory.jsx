@@ -19,13 +19,16 @@ import Select from 'react-select';
 import FormLabel from '@material-ui/core/FormLabel';
 import {Input} from 'antd';
 import 'antd/dist/antd.css';
+import PropTypes from 'prop-types';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import getAccessToken from "../../routes/ACCESS_TOKEN";
+// import CircularProgress from '@material-ui/core/CircularProgress';
 
 const theme = createMuiTheme({
     direction: 'rtl',
 });
 
 const styles = theme => ({
-
     root: {
         display: 'flex',
     },
@@ -88,8 +91,11 @@ const styles = theme => ({
     },
     customColor: {
         margin: theme.spacing.unit,
-        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-        background: "linear-gradient(60deg, #023c93, #0b0049)"
+        background: "rgb(92,184,92)",
+        color:"#fff",
+        "&:hover": {
+            background: "rgb(70, 142, 70)",
+        },
     },
     tableActionButton: {
         width: "27px",
@@ -128,6 +134,7 @@ const styles = theme => ({
 
 class definitionProductCategory extends React.Component {
     state = {
+        linearProgress: false,
         categoryName: '',
         attributeCategoryList: [],
         productCategoryList: [],
@@ -183,11 +190,20 @@ class definitionProductCategory extends React.Component {
         );
     }
 
-    componentDidMount() {
-        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-category-info`)
+    async componentDidMount() {
+        this.setState({
+            linearProgress: true,
+        });
+        var access_token = await getAccessToken();
+        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-category-info`+access_token)
             .then(res => {
                 if (res.data.success) {
+                    this.setState({
+                        linearProgress: false,
+                    });
+
                     const data = res.data;
+                    console.log(data)
                     // var productCategoryList = this.state.productCategoryList;
                     var productCategorys = data.productCategoryList;
                     var productAttributeCategoryList = data.productAttributeCategoryList;
@@ -216,14 +232,23 @@ class definitionProductCategory extends React.Component {
                     });
                 }
                 else {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
                 }
             }).catch((error) => {
+            this.setState({
+                linearProgress: false,
+            });
             this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
         });
     };
 
-    sendProductCategory() {
+    async sendProductCategory() {
+        this.setState({
+            linearProgress: true,
+        });
         var selectedAttributeList = [];
         var attributeCategoryList = this.state.attributeCategoryList;
         attributeCategoryList.forEach(function (attributeCategory) {
@@ -241,10 +266,14 @@ class definitionProductCategory extends React.Component {
                 "identifier": this.state.parentIdentifier
             }
         };
-        axios.post(`http://shop.isuncharge.com/isunshop/register/product-category`,
+        var access_token = await getAccessToken();
+        axios.post(`http://shop.isuncharge.com/isunshop/register/product-category`+access_token,
             data)
             .then(res => {
                 if (res.data.success) {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.setState({
                         categoryName: '',
                         parentIdentifier: null,
@@ -255,9 +284,15 @@ class definitionProductCategory extends React.Component {
                     this.componentDidMount();
                     this.showNotification("tc", "عملیات با موفقیت انجام شد!  ", "success")
                 } else {
+                    this.setState({
+                        linearProgress: false,
+                    });
                     this.showNotification("tc", "عملیات انجام نشد!", "danger")
                 }
             }).catch((error) => {
+            this.setState({
+                linearProgress: false,
+            });
             this.showNotification("tc", "عملیات انجام نشد!", "danger")
         });
     };
@@ -290,6 +325,20 @@ class definitionProductCategory extends React.Component {
         const {classes} = this.props;
         return (
             <MuiThemeProvider theme={theme}>
+                {
+                    this.state.linearProgress === true ?
+                        <div style={{
+                            position: 'fixed',
+                            zIndex: '100',
+                            top: '0px',
+                            width: '108%',
+                            left: '-33px'
+                        }}>
+                            {console.log(1133234)}
+                            <LinearProgress/>
+                        </div>
+                        : null
+                }
                 <div dir="rtl">
                     <Card>
                         <CardHeader color="primary">

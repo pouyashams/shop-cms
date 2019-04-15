@@ -6,7 +6,6 @@ import Table from "components/Table/Table.jsx";
 import Card from "components/Card/Card.jsx";
 import CardHeader from "components/Card/CardHeader.jsx";
 import CardBody from "components/Card/CardBody.jsx";
-import axios from "axios";
 import CardFooter from "components/Card/CardFooter.jsx";
 import {MuiThemeProvider, createMuiTheme} from '@material-ui/core/styles';
 
@@ -51,7 +50,11 @@ class TableSaleInfo extends React.Component {
         const {classes} = this.props;
         return (
             <MuiThemeProvider >
-                <Card plain>
+                <Card
+                    style={{
+                        boxShadow: "rgba(22, 22, 23, 0.12) 0px 12px 20px -10px, rgba(12, 12, 12, 0.21) 0px 4px 20px 0px, rgba(0, 0, 0, 0) 0px 7px 8px -5px",
+                    }}
+                >
                     {this.props.dataOfSaleInfo != null ? (
                         <GridContainer>
                             <GridItem xs={12} sm={12} md={12}>
@@ -66,12 +69,14 @@ class TableSaleInfo extends React.Component {
                                     <CardBody>
                                         <Card
                                             style={{
-                                                backgroundColor: "#f6f8f7",
+                                                backgroundColor: "#eaeceb",
+                                                boxShadow: "rgba(22, 22, 23, 0.12) 0px 12px 20px -10px, rgba(12, 12, 12, 0.21) 0px 4px 20px 0px, rgba(0, 0, 0, 0) 0px 7px 8px -5px",
+
                                             }}
                                         >
                                             <CardBody>
                                                 <Table
-                                                    tableHeaderColor="primary"
+                                                    tableHeaderColor="rose"
                                                     tableHead={["نام سرویس", "مبلغ", "اپراتور", "توضیحات", "کد پیگیری"]}
                                                     tableData={this.props.dataOfSaleInfo}
                                                 />
@@ -79,13 +84,13 @@ class TableSaleInfo extends React.Component {
                                         </Card>
                                         <Card
                                             style={{
-                                                backgroundColor: "#f6f8f7",
-                                                
+                                                backgroundColor: "#e9ebea",
+                                                boxShadow: "rgba(22, 22, 23, 0.12) 0px 12px 20px -10px, rgba(12, 12, 12, 0.21) 0px 4px 20px 0px, rgba(0, 0, 0, 0) 0px 7px 8px -5px",
                                             }}
                                         >
                                             <CardBody>
                                         <Table
-                                            tableHeaderColor="primary"
+                                            tableHeaderColor="rose"
                                             tableHead={["مجموع", "تعداد", "نام سرویس"]}
                                             tableData={this.props.summaryOfAllSaleInfo}
                                         />

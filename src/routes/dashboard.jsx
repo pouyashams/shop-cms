@@ -1,15 +1,16 @@
 import Dashboard from "@material-ui/icons/Dashboard";
+import { Menu, Icon, Button } from 'antd';
 // import Person from "@material-ui/icons/Person";
 import LibraryBooks from "@material-ui/icons/LibraryBooks";
-// import BubbleChart from "@material-ui/icons/BubbleChart";
+import BubbleChart from "@material-ui/icons/BubbleChart";
 // import LocationOn from "@material-ui/icons/LocationOn";
 // import Notifications from "@material-ui/icons/Notifications";
 import ProductCategoryAttribute from "../views/ProductCategory/ProductCategoryAttribute";
 import DashboardPage from "views/Dashboard/Dashboard.jsx";
-// import UserProfile from "views/UserProfile/UserProfile.jsx";
+import UserProfile from "views/UserProfile/UserProfile.jsx";
 import SaleInfoForm from "../views/SaleInfo/SaleInfoForm"
 // import Typography from "views/Typography/Typography.jsx";
-// import Icons from "views/Icons/Icons.jsx";
+import Icons from "views/Icons/Icons.jsx";
 // import Maps from "views/Maps/Maps.jsx";
 // import NotificationsPage from "views/Notifications/Notifications.jsx";
 import definitionProductCategory from "../views/DefinitionProductCategory/definitionProductCategory.jsx";
@@ -17,17 +18,23 @@ import definitionProductCategory from "../views/DefinitionProductCategory/defini
 import MainForm from "../views/AddProductPanel/MainForm";
 import Confirmation from "../views/Confirmation/Confirmation";
 import EditProduct from "../views/EditProduct/EditProduct";
-
+import hardwareInfo from "../views/hardwareInfo/hardwareInfo";
+// import LoginPage from "../views/LoginPage/LoginPage"
+import simCardInfo from "../views/addSimCard/simCardInfo"
+import chargeDetails from "../views/chargeDetails/chargeDetails"
+import internetPack from "../views/internetPack/internetPack"
+import billDetails from "../views/billDetails/billDetails"
+import paymentPort from "../views/paymentPort/paymentPort"
 
 const dashboardRoutes = [
 
-    {
-        path: "/dashboard",
-        sidebarName: "Dashboard",
-        // navbarName: "Material Dashboard",
-        icon: Dashboard,
-        component: DashboardPage
-    },
+    // {
+    //     path: "/dashboard",
+    //     sidebarName: "Dashboard",
+    //     // navbarName: "Material Dashboard",
+    //     icon: Dashboard,
+    //     component: DashboardPage
+    // },
     {
         path: "/ProductCategoryAttribute",
         sidebarName: "ویژگی نوع کالا",
@@ -48,30 +55,83 @@ const dashboardRoutes = [
         path: "/addProduct",
         sidebarName: "اضافه کردن کالا",
         navbarName: "اضافه کردن کالا",
-        icon: "content_paste",
+        icon: Dashboard,
         component: MainForm
+    },
+    {
+        path: "/simCardInfo",
+        sidebarName: "اضافه کردن سیمکارت",
+        navbarName: "اضافه کردن سیمکارت",
+        icon: Dashboard,
+        component: simCardInfo
     },
     {
         path: "/editProduct",
         sidebarName: "به روز رسانی کالا",
         // navbarName: "به روز رسانی کالا  ",
-        icon: "content_paste",
+        icon: Dashboard,
         component: EditProduct
     },
     {
         path: "/Confirmation",
         sidebarName: "بررسی فروش",
         navbarName: "بررسی فروش",
-        icon: "content_paste",
+        icon: Dashboard,
         component: Confirmation
+    },
+
+    // { path: "/login-page", name: "LoginPage", component: LoginPage },
+    // {
+    //     path: "/login-page",
+    //     sidebarName: "گزارش فرون پرداخت",
+    //     navbarName: "گزارش فران پرداخت",
+    //     icon: Dashboard,
+    //     component: LoginPage
+    // },
+
+    {
+        path: "/chargeDetails",
+        sidebarName: "گزارش شارژ",
+        navbarName: "گزارش شارژ",
+        icon: "content_paste",
+        component: chargeDetails
+    },
+    {
+        path: "/billDetails",
+        sidebarName: "گزارش قبض",
+        navbarName: "گزارش قبض",
+        icon: "content_paste",
+        component: billDetails
+    },
+    {
+        path: "/internetPack",
+        sidebarName: "گزارش بسته اینترنت",
+        navbarName: "گزارش بسته اینترنت",
+        icon: "content_paste",
+        component: internetPack
     },
     {
         path: "/SaleInfoForm",
         sidebarName: "گزارش فروش آیسان پرداخت",
         navbarName: "گزارش فروش آیسان پرداخت",
-        icon: Dashboard,
+        icon: "content_paste",
         component: SaleInfoForm
     },
+    {
+        path: "/paymentPort",
+        sidebarName: "درگاه پرداخت",
+        navbarName: "درگاه پرداخت",
+        icon: BubbleChart,
+        component: paymentPort
+    },
+    {
+        path: "/hardwareInfo",
+        sidebarName: "وضعیت سخت افزار",
+        navbarName: "وضعیت سخت افزار",
+        icon: BubbleChart ,
+        component: hardwareInfo
+    },
+
     // {
     //     path: "/StuffManager",
     //     sidebarName: "مدیریت محصولات",
@@ -83,7 +143,7 @@ const dashboardRoutes = [
     //     path: "/user",
     //     sidebarName: "User Profile",
     //     navbarName: "Profile",
-    //     icon: Person,
+    //     icon: Dashboard,
     //     component: UserProfile
     // },
 
@@ -115,7 +175,7 @@ const dashboardRoutes = [
     //     icon: Notifications,
     //     component: NotificationsPage
     // },
-    {redirect: true, path: "/", to: "/dashboard", navbarName: "Redirect"}
+    {redirect: true, path: "/", to: "/ProductCategoryAttribute", navbarName: "Redirect"}
 ];
 
 export default dashboardRoutes;

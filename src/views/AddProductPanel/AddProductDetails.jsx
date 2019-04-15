@@ -106,7 +106,7 @@ const styles = theme => ({
     inputStyleN: {
         height: "38px",
         marginLeft: theme.spacing.unit * 2,
-        marginRight: theme.spacing.unit * 1,
+        marginRight: theme.spacing.unit * 2,
         // marginBottom: theme.spacing.unit * 2,
         width: 150,
         direction: 'rtl'
@@ -211,11 +211,18 @@ class AddProductDetails extends React.Component {
         };
         this.props.productItemInfo.productItemSupplier = productItemSupplier;
     }
-
-    handleChangePrice = input => event => {
-        this.props.productItemInfo.price = event.target.value;
+    handleChangeTaxation= input => event => {
+        this.props.productItemInfo.taxation = event.target.value.substr(1);
     }
-
+    handleChangePrice = input => event => {
+        this.props.productItemInfo.price = event.target.value.replace(/,/g, '');
+    }
+    handleChangeengNameEng = input => event => {
+        this.props.productItemInfo.englishName = event.target.value;
+    }
+    handleChangeengName = input => event => {
+        this.props.productItemInfo.name = event.target.value;
+    }
     handleChangeCode = input => event => {
         this.props.productItemInfo.code = event.target.value;
     }
@@ -280,98 +287,169 @@ class AddProductDetails extends React.Component {
                                 <CardHeader plain color={this.props.productItemInfo.color}>
                                     <h4 className={classes.cardTitleWhite}>تعریف مشخصات کالا</h4>
                                     {this.props.productItemInfo.index !== 1 ?
-                                    <div onClick={this.deleteRow}
-                                         style={{
-                                             float: 'left',
-                                             marginTop: theme.spacing.unit * -4,
-                                         }}
-                                    >
-                                        <IconButton aria-label="Delete">
-                                            <DeleteIcon fontSize="small"/>
-                                        </IconButton>
-                                    </div>
-                                    :null}
+                                        <div onClick={this.deleteRow}
+                                             style={{
+                                                 float: 'left',
+                                                 marginTop: theme.spacing.unit * -4,
+                                             }}
+                                        >
+                                            <IconButton aria-label="Delete">
+                                                <DeleteIcon fontSize="small"/>
+                                            </IconButton>
+                                        </div>
+                                        : null}
                                 </CardHeader>
                                 <CardBody>
                                     <GridContainer>
                                         <GridItem xs={12} sm={12} md={12}>
                                             <form>
                                                 <form>
-                                                    <FormControlLabel
+
+                                                    <form>
+                                                        <FormControlLabel
+                                                            style={{
+                                                                marginTop: theme.spacing.unit * 2,
+                                                            }}
+                                                            control={
+                                                                <Input
+                                                                    className={classes.inputStyleN}
+                                                                    placeholder="-------------------------"
+                                                                    onChange={this.handleChangeengName()}
+                                                                    defaultValue={productItemInfo.name}
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    required
+                                                                />
+                                                            }
+                                                            label={"نام کالا: "}
+                                                            labelPlacement="start"
+                                                        />
+                                                        <FormControlLabel
+                                                            style={{
+                                                                marginTop: theme.spacing.unit * 2,
+                                                            }}
+                                                            control={
+                                                                <Input
+                                                                    className={classes.inputStyleN}
+                                                                    placeholder="(انگلیسی)"
+                                                                    onChange={this.handleChangeengNameEng()}
+                                                                    defaultValue={productItemInfo.englishName}
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    required
+                                                                />
+                                                            }
+                                                            label={"نام کالا : "}
+                                                            labelPlacement="start"
+                                                        />
+                                                        <FormControlLabel
+                                                            style={{
+                                                                marginTop: theme.spacing.unit * 2,
+                                                            }}
+                                                            control={
+                                                                <Input
+                                                                    placeholder="-------------------------------"
+                                                                    className={classes.inputStyleN}
+                                                                    onChange={this.handleChangeCode()}
+                                                                    defaultValue={productItemInfo.code}
+                                                                />
+                                                            }
+                                                            label={"شناسه کالا: "}
+                                                            labelPlacement="start"
+                                                        />
+                                                        <FormControlLabel
+                                                            style={{
+                                                                marginTop: theme.spacing.unit * 2,
+                                                            }}
+                                                            control={
+                                                                <Select
+                                                                    className={classes.inputSelectionSup}
+                                                                    isDisabled={false}
+                                                                    isLoading={false}
+                                                                    isClearable={true}
+                                                                    isRtl={true}
+                                                                    isSearchable={true}
+                                                                    options={this.props.productItemSupplierList}
+                                                                    value={this.props.productItemInfo.productItemSupplier}
+                                                                    defaultValue={this.props.productItemInfo.productItemSupplier}
+                                                                    onChange={this.handleChangeSupplier}
+                                                                    placeholder="----------------------"
+                                                                />
+                                                            }
+                                                            label={"فروشنده محصول: "}
+                                                            labelPlacement="start"
+                                                        />
+
+                                                    </form>
+
+                                                    <form
                                                         style={{
-                                                            marginTop: theme.spacing.unit * 2,
+                                                            marginRight: theme.spacing.unit * 1,
                                                         }}
-                                                        control={
-                                                            <NumberFormat
-                                                                // thousandSeparator={true}
-                                                                customInput={Input}
-                                                                className={classes.inputStyleN}
-                                                                value={productItemInfo.price}
-                                                                placeholder="---------------------------"
-                                                                onChange={this.handleChangePrice()}
-                                                                // format="###,###,###"
-                                                                defaultValue=''
-                                                                variant="outlined"
-                                                                margin="normal"
-                                                                required
-                                                            />
-                                                        }
-                                                        label={"قیمت (تومان): "}
-                                                        labelPlacement="start"
-                                                    />
-                                                    <FormControlLabel
-                                                        style={{
-                                                            marginTop: theme.spacing.unit * 2,
-                                                        }}
-                                                        control={
-                                                            <Input
-                                                                placeholder="-------------------------------"
-                                                                className={classes.inputStyleN}
-                                                                onChange={this.handleChangeCode()}
-                                                                defaultValue={productItemInfo.code}
-                                                            />
-                                                        }
-                                                        label={"شناسه ی کالا: "}
-                                                        labelPlacement="start"
-                                                    />
-                                                    <FormControlLabel
-                                                        style={{
-                                                            marginTop: theme.spacing.unit * 2,
-                                                        }}
-                                                        control={
-                                                            <Input
-                                                                placeholder="-------------------------------"
-                                                                type="number"
-                                                                className={classes.inputStyleN}
-                                                                onChange={this.handleChangeNumberOfProduct()}
-                                                                defaultValue={productItemInfo.numberOfProduct}
-                                                            />
-                                                        }
-                                                        label={"تعداد کالا: "}
-                                                        labelPlacement="start"
-                                                    />
-                                                    <FormControlLabel
-                                                        style={{
-                                                            marginTop: theme.spacing.unit * 2,
-                                                        }}
-                                                        control={
-                                                            <Select
-                                                                className={classes.inputSelectionSup}
-                                                                isDisabled={false}
-                                                                isLoading={false}
-                                                                isClearable={true}
-                                                                isRtl={true}
-                                                                isSearchable={true}
-                                                                options={this.props.productItemSupplierList}
-                                                                value={this.props.productItemInfo.productItemSupplier}
-                                                                defaultValue={this.props.productItemInfo.productItemSupplier}
-                                                                onChange={this.handleChangeSupplier}
-                                                                placeholder="----------------------"
-                                                            />
-                                                        }
-                                                        label={"فروشنده محصول: "}
-                                                        labelPlacement="start"
-                                                    />
+                                                    >
+                                                        <FormControlLabel
+                                                            style={{
+                                                                marginTop: theme.spacing.unit * 2,
+                                                            }}
+                                                            control={
+                                                                <NumberFormat
+                                                                    thousandSeparator={true}
+                                                                    customInput={Input}
+                                                                    className={classes.inputStyleN}
+                                                                    value={productItemInfo.price}
+                                                                    placeholder="(ریال)"
+                                                                    onChange={this.handleChangePrice()}
+                                                                    // format="###,###,###"
+                                                                    defaultValue=''
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    required
+                                                                />
+                                                            }
+                                                            label={"قیمت : "}
+                                                            labelPlacement="start"
+                                                        />
+                                                        <FormControlLabel
+                                                            style={{
+                                                                marginTop: theme.spacing.unit * 2,
+                                                            }}
+                                                            control={
+                                                                <NumberFormat
+                                                                    prefix="%"
+                                                                    // thousandSeparator={true}
+                                                                    customInput={Input}
+                                                                    className={classes.inputStyleN}
+                                                                    value={productItemInfo.taxation}
+                                                                    placeholder="---------------------------"
+                                                                    onChange={this.handleChangeTaxation()}
+                                                                    // format="###,###,###"
+                                                                    defaultValue=''
+                                                                    variant="outlined"
+                                                                    margin="normal"
+                                                                    required
+                                                                />
+                                                            }
+                                                            label={"مالیات : "}
+                                                            labelPlacement="start"
+                                                        />
+                                                        <FormControlLabel
+                                                            style={{
+                                                                marginTop: theme.spacing.unit * 2,
+                                                            }}
+                                                            control={
+                                                                <Input
+                                                                    placeholder="-------------------------------"
+                                                                    type="number"
+                                                                    className={classes.inputStyleN}
+                                                                    onChange={this.handleChangeNumberOfProduct()}
+                                                                    defaultValue={productItemInfo.numberOfProduct}
+                                                                />
+                                                            }
+                                                            label={"تعداد کالا : "}
+                                                            labelPlacement="start"
+                                                        />
+                                                    </form>
+
 
                                                 </form>
                                                 <form>

@@ -2,6 +2,7 @@ import React from "react";
 import classNames from "classnames";
 import PropTypes from "prop-types";
 import { NavLink } from "react-router-dom";
+import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 // @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import Drawer from "@material-ui/core/Drawer";
@@ -15,7 +16,9 @@ import Icon from "@material-ui/core/Icon";
 import HeaderLinks from "components/Header/HeaderLinks.jsx";
 
 import sidebarStyle from "assets/jss/material-dashboard-react/components/sidebarStyle.jsx";
-
+const theme = createMuiTheme({
+    direction: 'rtl', // Both here and <body dir="rtl">
+});
 const Sidebar = ({ ...props }) => {
   // verifies if routeName is the one active (in browser input)
   function activeRoute(routeName) {

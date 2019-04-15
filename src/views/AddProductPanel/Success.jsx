@@ -163,7 +163,7 @@ class Success extends React.Component {
         text: '',
         alertStyle: 'info',
         tc: false,
-        Pagination: false,
+        Pagination: true,
         treeTable: false,
         tableColumns: [{
             Header: 'مشخصات کالا های اضافه شده',
@@ -195,16 +195,23 @@ class Success extends React.Component {
 
             ]
         },],
-        dataTable: [
-            {
-                "nameOfProduct": this.props.name,
-                "code": this.props.productItemInfoList[0].code,
-                "numberOfProduct": this.props.productItemInfoList[0].numberOfProduct,
-                "productItemSupplier": this.props.productItemInfoList[0].productItemSupplier.label,
-                "price": this.props.productItemInfoList[0].price,
-            },
-        ],
+        dataTable: [],
     }
+
+    makeTableData() {
+        this.props.productItemInfoList.map(productItemInfo => (
+          this.state.dataTable.push({
+              "nameOfProduct": this.props.name,
+              "code": productItemInfo.code,
+              "numberOfProduct": productItemInfo.numberOfProduct,
+              "productItemSupplier": productItemInfo.productItemSupplier.label,
+              "price": productItemInfo.price,
+          })
+        ))
+        // console.log(11234321)
+        // console.log(this.state.dataTable)
+    }
+
 
     refreshPage() {
         window.location.reload();
@@ -223,6 +230,7 @@ class Success extends React.Component {
                         <CardHeader plain color={"warning"}>
                             <h4 className={classes.cardTitleWhite}>نمایش کالا ها</h4>
                         </CardHeader>
+                        {this.makeTableData()}
                         <CardBody>
                             <TableWithAction
                                 tableColumns={this.state.tableColumns}
@@ -241,8 +249,11 @@ class Success extends React.Component {
                                         marginRight: theme.spacing.unit * 2,
                                         height: "25px",
                                         width: 100,
-                                        boxShadow: " 0 12px 20px -10px rgba(7, 26, 147, 0.28), 0 4px 20px 0px rgba(0, 0, 0, 0.12), 0 7px 8px -5px rgba(7, 26, 147, 0.2)",
-                                        background: "linear-gradient(60deg, #125a62, #125a62)"
+                                        background: "rgb(92,184,92)",
+                                        color: "#fff",
+                                        "&:hover": {
+                                            background: "rgb(70, 142, 70)",
+                                        },
                                     }}
                                     color="secondary"
                                     onClick={() => {
