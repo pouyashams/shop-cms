@@ -190,12 +190,12 @@ class definitionProductCategory extends React.Component {
         );
     }
 
-    async componentDidMount() {
+    async useAccessToken() {
+        var access_token = await getAccessToken();
         this.setState({
             linearProgress: true,
         });
-        var access_token = await getAccessToken();
-        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-category-info`+access_token)
+        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-category-info?access_token=`+access_token)
             .then(res => {
                 if (res.data.success) {
                     this.setState({
@@ -243,9 +243,14 @@ class definitionProductCategory extends React.Component {
             });
             this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
         });
+    }
+
+    componentDidMount() {
+        this.useAccessToken();
     };
 
     async sendProductCategory() {
+
         this.setState({
             linearProgress: true,
         });
@@ -267,7 +272,7 @@ class definitionProductCategory extends React.Component {
             }
         };
         var access_token = await getAccessToken();
-        axios.post(`http://shop.isuncharge.com/isunshop/register/product-category`+access_token,
+        axios.post(`http://shop.isuncharge.com/isunshop/register/product-category?access_token=`+access_token,
             data)
             .then(res => {
                 if (res.data.success) {

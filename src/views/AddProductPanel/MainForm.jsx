@@ -236,7 +236,7 @@ class MainForm extends Component {
                 productItemInfoList: productItemInfoList,
             }
             var access_token = await getAccessToken();
-            axios.post(`http://shop.isuncharge.com/isunshop/register/product` + access_token, data)
+            axios.post(`http://shop.isuncharge.com/isunshop/register/product?access_token=` + access_token, data)
                 .then(res => {
                     if (res.data.success) {
                         this.setState({
@@ -297,14 +297,13 @@ class MainForm extends Component {
         );
     }
 
-
-    async componentDidMount() {
+    async useAccessToken() {
         this.setState({
             linearProgress: true,
         });
         var access_token = await getAccessToken();
 
-        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-info` + access_token)
+        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-info?access_token=` + access_token)
             .then(res => {
                 if (res.data.success) {
                     this.setState({
@@ -329,6 +328,9 @@ class MainForm extends Component {
                         productCategoryOptions: productCategoryList,
                         productItemSupplierList: productItemSupplierList,
                     });
+                    console.log(12)
+                    console.log(this.state.productItemSupplierList)
+                    console.log(11)
                 }
                 else {
                     this.setState({
@@ -342,6 +344,10 @@ class MainForm extends Component {
             });
             this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
         });
+    }
+
+    componentDidMount() {
+        this.useAccessToken();
     };
 
     prevStep = () => {

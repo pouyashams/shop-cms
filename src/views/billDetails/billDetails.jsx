@@ -399,7 +399,7 @@ class EditProduct extends React.Component {
             }
         }
         var access_token = await getAccessToken();
-        axios.post(`` + access_token,
+        axios.post(`http://baseurl.com/isunshop/report/search-bill-order?access_token=` + access_token,
             data)
             .then(res => {
                 const dataTable = []
@@ -426,56 +426,56 @@ class EditProduct extends React.Component {
         this.searchItemProduct();
     };
 
-    async componentDidMount() {
-        this.setState({
-            linearProgress: true,
-        });
-        var access_token = await getAccessToken();
-        axios.get(``+access_token)
-            .then(res => {
-                if (res.data.success) {
-                    this.setState({
-                        linearProgress: false,
-                    });
-                    const categoryList = [];
-                    const data = res.data.productCategoryList;
-                    data.map(data => (
-                        categoryList.push(
-                            {value: data.identifier, label: data.productCategoryName})
-                    ))
-                    console.log(1)
-                    // console.log(categoryList)
-                    var searchInfo = this.state.searchInfo;
-                    console.log(searchInfo[5].selectOption)
-                    searchInfo[5].selectOption = categoryList;
-                    this.setState({
-                        searchInfo: searchInfo,
-                    });
-                } else {
-                    this.setState({
-                        linearProgress: false,
-                    });
-                    this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
-                }
-            }).catch((error) => {
-            this.setState({
-                linearProgress: false,
-            });
-            this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
-        });
-        var searchInfoFrom = {
-            name: 'registerDateFrom',
-            value: moment().locale('fa').format('YYYY/MM/DD')
-
-        };
-        var searchInfoTo = {
-            name: 'registerDateTo',
-            value: moment().locale('fa').format('YYYY/MM/DD')
-
-        };
-        this.state.search.push(searchInfoFrom);
-        this.state.search.push(searchInfoTo);
-    }
+    // async componentDidMount() {
+    //     this.setState({
+    //         linearProgress: true,
+    //     });
+    //     var access_token = await getAccessToken();
+    //     axios.get(``+access_token)
+    //         .then(res => {
+    //             if (res.data.success) {
+    //                 this.setState({
+    //                     linearProgress: false,
+    //                 });
+    //                 const categoryList = [];
+    //                 const data = res.data.productCategoryList;
+    //                 data.map(data => (
+    //                     categoryList.push(
+    //                         {value: data.identifier, label: data.productCategoryName})
+    //                 ))
+    //                 console.log(1)
+    //                 // console.log(categoryList)
+    //                 var searchInfo = this.state.searchInfo;
+    //                 console.log(searchInfo[5].selectOption)
+    //                 searchInfo[5].selectOption = categoryList;
+    //                 this.setState({
+    //                     searchInfo: searchInfo,
+    //                 });
+    //             } else {
+    //                 this.setState({
+    //                     linearProgress: false,
+    //                 });
+    //                 this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
+    //             }
+    //         }).catch((error) => {
+    //         this.setState({
+    //             linearProgress: false,
+    //         });
+    //         this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
+    //     });
+    //     var searchInfoFrom = {
+    //         name: 'registerDateFrom',
+    //         value: moment().locale('fa').format('YYYY/MM/DD')
+    //
+    //     };
+    //     var searchInfoTo = {
+    //         name: 'registerDateTo',
+    //         value: moment().locale('fa').format('YYYY/MM/DD')
+    //
+    //     };
+    //     this.state.search.push(searchInfoFrom);
+    //     this.state.search.push(searchInfoTo);
+    // }
 
     componentWillUnmount() {
         var id = window.setTimeout(null, 0);

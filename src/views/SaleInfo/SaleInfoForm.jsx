@@ -7,6 +7,7 @@ import Snackbar from "components/Snackbar/Snackbar.jsx";
 import AddAlert from "@material-ui/icons/AddAlert";
 import {withStyles} from '@material-ui/core/styles';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import getAccessToken from "../../routes/ACCESS_TOKEN";
 
 const styles = theme => ({
     direction: 'rtl',
@@ -58,12 +59,13 @@ class TableForm extends Component {
         return;
     }
 
-    saleInfo() {
+    async  saleInfo() {
         const data = {
             "userName": this.state.name,
             "password": this.state.password,
         }
-        axios.post(`http://shop.isuncharge.com/isunshop/report/all-sale-info`,
+        var access_token = await getAccessToken();
+        axios.post(`http://shop.isuncharge.com/isunshop/report/all-sale-info?access_token=`+ access_token,
             data)
             .then(res => {
                 if (res.data.success) {
@@ -153,7 +155,7 @@ class TableForm extends Component {
 
     }
 
-    saleInfoTimer() {
+    async saleInfoTimer() {
         this.setState({
             linearProgress: true,
         });
@@ -164,7 +166,8 @@ class TableForm extends Component {
         this.setState({
             linearProgress: true,
         });
-        axios.post(`http://shop.isuncharge.com/isunshop/report/all-sale-info`,
+        var access_token = await getAccessToken();
+        axios.post(`http://shop.isuncharge.com/isunshop/report/all-sale-info?access_token=`+ access_token,
             data)
             .then(res => {
                 if (res.data.success) {

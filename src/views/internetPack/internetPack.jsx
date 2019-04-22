@@ -31,6 +31,7 @@ import faIR from 'antd/lib/locale-provider/fa_IR';
 import axios from "axios";
 import AddAlert from "@material-ui/icons/AddAlert";
 import LinearProgress from '@material-ui/core/LinearProgress';
+import getAccessToken from "../../routes/ACCESS_TOKEN";
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -363,7 +364,7 @@ class EditProduct extends React.Component {
         dataTable: [],
     }
 
-    searchItemProduct() {
+    async searchItemProduct() {
         this.setState({
             linearProgress: true,
         });
@@ -406,7 +407,9 @@ class EditProduct extends React.Component {
                 data.packageCode = this.state.search[i].value;
             }
         }
-        axios.post(``,
+        var access_token = await getAccessToken();
+
+        axios.post(`http://baseurl.com/isunshop/report/search-internet-package-order?access_token=`+ access_token,
             data)
             .then(res => {
                 const dataTable = []
@@ -433,55 +436,55 @@ class EditProduct extends React.Component {
         this.searchItemProduct();
     };
 
-    componentDidMount() {
-        this.setState({
-            linearProgress: true,
-        });
-        axios.get(``)
-            .then(res => {
-                if (res.data.success) {
-                    this.setState({
-                        linearProgress: false,
-                    });
-                    const categoryList = [];
-                    const data = res.data.productCategoryList;
-                    data.map(data => (
-                        categoryList.push(
-                            {value: data.identifier, label: data.productCategoryName})
-                    ))
-                    console.log(1)
-                    // console.log(categoryList)
-                    var searchInfo = this.state.searchInfo;
-                    console.log(searchInfo[5].selectOption)
-                    searchInfo[5].selectOption = categoryList;
-                    this.setState({
-                        searchInfo: searchInfo,
-                    });
-                } else {
-                    this.setState({
-                        linearProgress: false,
-                    });
-                    this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
-                }
-            }).catch((error) => {
-            this.setState({
-                linearProgress: false,
-            });
-            this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
-        });
-        var searchInfoFrom = {
-            name: 'registerDateFrom',
-            value: moment().locale('fa').format('YYYY/MM/DD')
-
-        };
-        var searchInfoTo = {
-            name: 'registerDateTo',
-            value: moment().locale('fa').format('YYYY/MM/DD')
-
-        };
-        this.state.search.push(searchInfoFrom);
-        this.state.search.push(searchInfoTo);
-    }
+    // componentDidMount() {
+    //     this.setState({
+    //         linearProgress: true,
+    //     });
+    //     axios.get(``)
+    //         .then(res => {
+    //             if (res.data.success) {
+    //                 this.setState({
+    //                     linearProgress: false,
+    //                 });
+    //                 const categoryList = [];
+    //                 const data = res.data.productCategoryList;
+    //                 data.map(data => (
+    //                     categoryList.push(
+    //                         {value: data.identifier, label: data.productCategoryName})
+    //                 ))
+    //                 console.log(1)
+    //                 // console.log(categoryList)
+    //                 var searchInfo = this.state.searchInfo;
+    //                 console.log(searchInfo[5].selectOption)
+    //                 searchInfo[5].selectOption = categoryList;
+    //                 this.setState({
+    //                     searchInfo: searchInfo,
+    //                 });
+    //             } else {
+    //                 this.setState({
+    //                     linearProgress: false,
+    //                 });
+    //                 this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
+    //             }
+    //         }).catch((error) => {
+    //         this.setState({
+    //             linearProgress: false,
+    //         });
+    //         this.showNotification("tc", "ارتباط با سرور برقرار نشد!", "danger")
+    //     });
+    //     var searchInfoFrom = {
+    //         name: 'registerDateFrom',
+    //         value: moment().locale('fa').format('YYYY/MM/DD')
+    //
+    //     };
+    //     var searchInfoTo = {
+    //         name: 'registerDateTo',
+    //         value: moment().locale('fa').format('YYYY/MM/DD')
+    //
+    //     };
+    //     this.state.search.push(searchInfoFrom);
+    //     this.state.search.push(searchInfoTo);
+    // }
 
     componentWillUnmount() {
         var id = window.setTimeout(null, 0);

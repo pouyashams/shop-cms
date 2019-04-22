@@ -31,6 +31,8 @@ import faIR from 'antd/lib/locale-provider/fa_IR';
 import axios from "axios";
 import AddAlert from "@material-ui/icons/AddAlert";
 import LinearProgress from '@material-ui/core/LinearProgress';
+import getAccessToken from "../../routes/ACCESS_TOKEN";
+
 
 const theme = createMuiTheme({
     direction: 'rtl',
@@ -463,7 +465,7 @@ class EditProduct extends React.Component {
         this.state.productItemInfoList.productItemSupplier.identifier = selectedOption.value;
     }
 
-    searchItemProduct() {
+    async searchItemProduct() {
         this.setState({
             linearProgress: true,
         });
@@ -491,13 +493,14 @@ class EditProduct extends React.Component {
                 data.registerDateTo = this.state.search[i].value;
             }
         }
-        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-product-item`,
+        var access_token = await getAccessToken();
+        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-product-item?access_token=` + access_token,
             data)
             .then(res => {
                 const dataTable = []
                 this.setState({
                     linearProgress: false,
-                    "dataTable": res.data
+                    "dataTable": res.data.data
                 });
             }).catch((error) => {
             this.setState({
@@ -505,27 +508,25 @@ class EditProduct extends React.Component {
             });
             this.showNotification("tc", "جستجو نا موفق بود!", "danger")
         });
-
     };
-
     handleChangeSelect = (selectedOption) => {
         this.setState({selectedOption});
-
     }
+    async handleChangeSearch(search) {
 
-    handleChangeSearch(search) {
         // console.log(345)
         this.state.search = search
 
         this.searchItemProduct();
     };
-
-    handleClickOpen = code => {
+    handleClickOpen = code => async () => {
+        console.log(1345432);
+        var access_token = await getAccessToken();
         this.setState({
             linearProgress: true,
         });
         const data = {"code": code}
-        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-product-item-with-details`,
+        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-product-item-with-details?access_token=` + access_token,
             data)
             .then(res => {
                 this.state.resData = res.data[0]
@@ -570,12 +571,12 @@ class EditProduct extends React.Component {
         });
     };
 
-
-    componentDidMount() {
+    async useAccessToken() {
+        var access_token = await getAccessToken();
         this.setState({
             linearProgress: true,
         });
-        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-category-info`)
+        axios.get(`http://shop.isuncharge.com/isunshop/fetch/define-product-category-info?access_token=` + access_token)
             .then(res => {
                 if (res.data.success) {
                     this.setState({
@@ -619,6 +620,10 @@ class EditProduct extends React.Component {
         };
         this.state.search.push(searchInfoFrom);
         this.state.search.push(searchInfoTo);
+    }
+
+    componentDidMount() {
+        this.useAccessToken();
     }
 
     handleChangeSelection = (selectedOption) => {
@@ -692,12 +697,13 @@ class EditProduct extends React.Component {
     handleClose = () => {
         this.setState({open: false});
     };
-    handleSave = () => {
+    handleSave = async () => {
         this.setState({
             linearProgress: true,
         });
         const data = this.state.productItemInfoList;
-        axios.post(`http://shop.isuncharge.com/isunshop/update/product-item`,
+        var access_token = await getAccessToken();
+        axios.post(`http://shop.isuncharge.com/isunshop/update/product-item?access_token=`+ access_token,
             data)
             .then(res => {
                 if (res.data.success) {

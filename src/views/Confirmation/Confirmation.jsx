@@ -169,6 +169,7 @@ class Confirmation extends React.Component {
     constructor() {
         super();
     }
+
     state = {
         data: null,
         open: false,
@@ -340,7 +341,7 @@ class Confirmation extends React.Component {
         });
     }
 
-    handleClose = () => {
+    handleClose = async () => {
         console.log(12)
         // this.showModal();
         // if (this.state.check) {
@@ -348,7 +349,8 @@ class Confirmation extends React.Component {
             linearProgress: true,
         });
         const data = {"identifier": this.state.data.identifier}
-        axios.post(`http://shop.isuncharge.com/isunshop/update/cancel-order`,
+        var access_token = await getAccessToken();
+        axios.post(`http://shop.isuncharge.com/isunshop/update/cancel-order?access_token=` + access_token,
             data)
             .then(res => {
                 if (res.data.success) {
@@ -374,7 +376,7 @@ class Confirmation extends React.Component {
         });
         // }
     };
-    handleSave = () => {
+    handleSave = async () => {
         // this.showModal();
 
         // if (this.state.check) {
@@ -382,7 +384,9 @@ class Confirmation extends React.Component {
             linearProgress: true,
         });
         const data = {"identifier": this.state.data.identifier}
-        axios.post(`http://shop.isuncharge.com/isunshop/update/accept-order`,
+        var access_token = await getAccessToken();
+
+        axios.post(`http://shop.isuncharge.com/isunshop/update/accept-order?access_token=` + access_token,
             data).then(res => {
             if (res.data.success) {
                 this.setState({
@@ -407,13 +411,14 @@ class Confirmation extends React.Component {
         });
         // }
     };
-    handleClickOpen = identifier => {
+    handleClickOpen = identifier => async () => {
         this.setState({
             open: true,
             linearProgress: true,
         });
         const data = {"identifier": identifier}
-        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-order`,
+        var access_token = await getAccessToken();
+        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-order?access_token=` + access_token,
             data)
             .then(res => {
                 const dataTable = []
@@ -492,7 +497,6 @@ class Confirmation extends React.Component {
     // }
 
     async showStatus() {
-
         var access_token = await getAccessToken();
         axios.get('http://shop.isuncharge.com/isunshop/fetch/all-order-status?access_token=' + access_token)
             .then(res => {
@@ -561,7 +565,7 @@ class Confirmation extends React.Component {
         );
     }
 
-    searchItemProduct() {
+    async searchItemProduct() {
         console.log(1)
         var data = {
             "identifier": "",
@@ -590,7 +594,8 @@ class Confirmation extends React.Component {
         });
         console.log(1)
         console.log(data)
-        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-order`,
+        var access_token = await getAccessToken();
+        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-order?access_token=` + access_token,
             data)
             .then(res => {
                 const data = res.data;

@@ -20,6 +20,7 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import {Input} from 'antd';
 import 'antd/dist/antd.css';
 import LinearProgress from '@material-ui/core/LinearProgress';
+import getAccessToken from "../../routes/ACCESS_TOKEN";
 
 
 const theme = createMuiTheme({
@@ -156,7 +157,9 @@ class ProductCategoryAttribute extends React.Component {
         );
     }
 
-    sendProductAttributeCategory() {
+    async sendProductAttributeCategory() {
+        var access_token = await getAccessToken();
+
         this.setState({
             linearProgress: true,
         });
@@ -171,7 +174,7 @@ class ProductCategoryAttribute extends React.Component {
             "categoryName": this.state.name,
             "productAttributeList": this.state.elementsValue
         };
-        axios.post(`http://shop.isuncharge.com/isunshop/register/product-attribute-category`,
+        axios.post(`http://shop.isuncharge.com/isunshop/register/product-attribute-category?access_token=`+access_token,
             data)
             .then(res => {
                 if (res.data.success) {
