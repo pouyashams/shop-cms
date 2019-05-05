@@ -411,18 +411,24 @@ class Confirmation extends React.Component {
         });
         // }
     };
-    handleClickOpen = identifier => async () => {
+
+    handleClickOpen = identifier => {
+        this.edit(identifier);
+    };
+    async edit(identifier) {
         this.setState({
             open: true,
             linearProgress: true,
         });
         const data = {"identifier": identifier}
         var access_token = await getAccessToken();
-        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-order?access_token=` + access_token,
+        axios.post(`http://shop.isuncharge.com/isunshop/report/search-product-order?access_token=` + access_token,
             data)
             .then(res => {
+                console.log(1232)
+                console.log(res.data.data[0])
                 const dataTable = []
-                res.data[0].productItemSellInfoList.map(productItem => (
+                res.data.data[0].productItemSellInfoList.map(productItem => (
                     dataTable.push(
                         {
                             "name": productItem.name,
@@ -433,7 +439,7 @@ class Confirmation extends React.Component {
                 ))
 
                 this.setState({
-                    data: res.data[0],
+                    data: res.data.data[0],
                     linearProgress: false,
                     dataTableInfo: dataTable,
                 });
@@ -443,7 +449,8 @@ class Confirmation extends React.Component {
             });
             this.showNotification("tc", "!  عملیات انجام نشد", "danger")
         });
-    };
+
+    }
     showModal = () => {
         this.setState({
             visible: true,
@@ -477,7 +484,7 @@ class Confirmation extends React.Component {
     //                     categoryList.push(
     //                         {value: data.identifier, label: data.productCategoryName})
     //                 ))
-    //                 var searchInfo = this.state.searchInfo;
+    //                 var searchInfo = thttp://shop.isuncharge.com/isunshop/report/search-product-order?access_token=xhis.state.searchInfo;
     //                 searchInfo[5].selectOption = categoryList;
     //                 this.setState({
     //                     searchInfo: searchInfo,
@@ -595,11 +602,12 @@ class Confirmation extends React.Component {
         console.log(1)
         console.log(data)
         var access_token = await getAccessToken();
-        axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-order?access_token=` + access_token,
+        axios.post(`http://shop.isuncharge.com/isunshop/report/search-product-order?access_token=` + access_token,
             data)
             .then(res => {
-                const data = res.data;
+                const data = res.data.data;
                 const dataTable = []
+                console.log(data)
                 data.map(data => (
                     dataTable.push(
                         {
@@ -832,7 +840,7 @@ class Confirmation extends React.Component {
                                                                                     width: 400,
                                                                                     direction: 'rtl'
                                                                                 }}
-                                                                                value={this.state.data.customerAddressInfo.address}
+                                                                                value={this.state.data.addressInfo.address}
                                                                             />
                                                                         }
                                                                         label={"آدرس :"}

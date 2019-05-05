@@ -221,7 +221,7 @@ class EditProduct extends React.Component {
                 searchType: "numberFormat",
                 labelText: "از تاریخ :",
                 placeholder: moment().locale('fa').format('YYYY/MM/DD'),
-                defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
+                // defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
                 format: "####/##/##",
 
             },
@@ -230,7 +230,7 @@ class EditProduct extends React.Component {
                 searchType: "numberFormat",
                 labelText: "تا تاریخ :",
                 placeholder: moment().locale('fa').format('YYYY/MM/DD'),
-                defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
+                // defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
                 format: "####/##/##",
             },
             {
@@ -238,7 +238,10 @@ class EditProduct extends React.Component {
                 searchType: "select",
                 labelText: " درگاه پرداخت:",
                 placeholder: "--------------------",
-                selectOption: []
+                selectOption: [
+                    {value: "PARSIAN_PAYMENT_GATEWAY_PROVIDER", label: "پارسیان"},
+                    {value: "FANAVA_PAYMENT_GATEWAY_PROVIDER", label: "فن آوا"}
+                ]
             },
             {
                 name: "identifier ",
@@ -246,26 +249,20 @@ class EditProduct extends React.Component {
                 labelText: "شناسه سفارش : ",
                 placeholder: "------------------------"
             },
-            {
-                name: "requesterTraceCode",
-                searchType: "textField",
-                labelText: "  کد درخواست کننده: ",
-                placeholder: "------------------------"
-
-            },
+            // {
+            //     name: "requesterTraceCode",
+            //     searchType: "textField",
+            //     labelText: "  کد درخواست کننده: ",
+            //     placeholder: "------------------------"
+            //
+            // },
             {
                 name: "mobileNumber",
                 searchType: "textField",
                 labelText: "شماره موبایل مشتری :",
                 placeholder: "-------------------------"
             },
-            {
-                name: "billType",
-                searchType: "select",
-                labelText: "نوع قبض:",
-                placeholder: "--------------------",
-                selectOption: []
-            },
+
             {
                 name: "billId",
                 searchType: "textField",
@@ -273,16 +270,37 @@ class EditProduct extends React.Component {
                 placeholder: "-------------------------"
             },
             {
-                name: "orderStatusCode ",
-                searchType: "textField",
-                labelText: "کد وضعیت سفارش: ",
-                placeholder: "------------------------"
+                name: "billTypeCode",
+                searchType: "select",
+                labelText: "نوع قبض:",
+                placeholder: "--------------------",
+                selectOption: [
+                    {value: "WATER_BILL_TYPE", label: "قبض آب"},
+                    {value: "ELECTRICITY_BILL_TYPE", label: "قبض برق"},
+                    {value: "GAS_BILL_TYPE", label: "قبض گاز"},
+                    {value: "PHONE_BILL_TYPE", label: "قبض تلفن ثابت"},
+                    {value: "MOBILE_BILL_TYPE", label: "قبض تلفن همراه"},
+                    {value: "MUNICIPALITY_BILL_TYPE", label: "قبض  شهرداری"},
+                    {value: "TAX_BILL_TYPE", label: "قبض مالیات"},
+                    {value: "DRIVING_BILL_TYPE", label: "قبض راهنمایی و رانندگی"},
+
+                ],
             },
             {
                 name: "customerReferenceNumber",
                 searchType: "textField",
                 labelText: "شماره پیگیری :",
                 placeholder: "-------------------------"
+            },
+            {
+                name: "orderStatusCode ",
+                searchType: "select",
+                labelText: "وضعیت سفارش: ",
+                placeholder: "---------------------",
+                selectOption: [
+                    {value: "REGISTERED_ORDER_STATUS", label: "ثبت شده"},
+                    {value: "PAID_ORDER_STATUS", label: "پرداخت شده"}
+                ],
             },
 
         ],
@@ -293,62 +311,64 @@ class EditProduct extends React.Component {
                     Header: 'شناسه قبض',
                     accessor: 'billId',
                     filterable: false,
-                    resizable: false
+                    resizable: true
+                },
+                {
+                    Header: 'شناسه سفارش',
+                    accessor: 'identifier',
+                    filterable: false,
+                    resizable: true
                 },
                 {
                     Header: 'شماره پیگری',
                     accessor: 'customerReferenceNumber',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
                 {
                     Header: 'شناسه پرداخت',
                     accessor: 'paymentId',
                     filterable: false,
-                    resizable: false
+                    resizable: true
+                },
+
+                {
+                    Header: 'شماره موبایل مشتری',
+                    accessor: 'mobileNumber',
+                    filterable: false,
+                    resizable: true
+                },
+
+                {
+                    Header: ' درگاه پرداخت',
+                    accessor: 'paymentGatewayProvider',
+                    filterable: false,
+                    resizable: true
                 },
                 {
                     Header: 'نوع قبض',
                     accessor: 'billType',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
+
                 {
-                    Header: 'شماره موبایل مشتری',
-                    accessor: 'mobileNumber',
+                    Header: 'وضعیت سفارش',
+                    accessor: 'orderStatus',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
-                {
-                    Header: ' درگاه پرداخت',
-                    accessor: 'paymentGatewayProviderCode',
-                    filterable: false,
-                    resizable: false
-                },
-                {
-                    Header: 'شناسه سفارش',
-                    accessor: 'identifier ',
-                    filterable: false,
-                    resizable: false
-                },
-                {
-                    Header: 'کد وضعیت سفارش',
-                    accessor: 'orderStatusCode ',
-                    filterable: false,
-                    resizable: false
-                },
-                {
-                    Header: ' کد درخواست کننده  ',
-                    accessor: 'requesterTraceCode',
-                    filterable: false,
-                    resizable: true,
-                    width: "200px"
-                },
+                // {
+                //     Header: ' کد درخواست کننده  ',
+                //     accessor: 'requesterTraceCode',
+                //     filterable: false,
+                //     resizable: true,
+                // },
                 {
                     Header: 'تاریخ',
                     filterable: false,
-                    accessor: 'date',
-                    resizable: false
+                    accessor: 'registerDateTime',
+                    resizable: true
                 },
             ]
         },],
@@ -388,8 +408,8 @@ class EditProduct extends React.Component {
                 data.requesterTraceCode = this.state.search[i].value;
             } else if (this.state.search[i].name === "billId") {
                 data.billId = this.state.search[i].value;
-            } else if (this.state.search[i].name === "billType") {
-                data.billType = this.state.search[i].value;
+            } else if (this.state.search[i].name === "billTypeCode") {
+                data.billTypeCode = this.state.search[i].value;
             } else if (this.state.search[i].name === "identifier ") {
                 data.identifier = this.state.search[i].value;
             } else if (this.state.search[i].name === "customerReferenceNumber ") {
@@ -399,14 +419,16 @@ class EditProduct extends React.Component {
             }
         }
         var access_token = await getAccessToken();
-        axios.post(`http://baseurl.com/isunshop/report/search-bill-order?access_token=` + access_token,
+        axios.post(`http://shop.isuncharge.com/isunshop/report/search-bill-order?access_token=` + access_token,
             data)
             .then(res => {
+                console.log(data)
                 const dataTable = []
                 this.setState({
                     linearProgress: false,
-                    "dataTable": res.data
+                    "dataTable": res.data.data
                 });
+                console.log(res.data.data)
             }).catch((error) => {
             this.setState({
                 linearProgress: false,

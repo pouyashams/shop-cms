@@ -228,7 +228,6 @@ class TableWithAction extends React.Component {
                                 boxShadow: "rgba(22, 22, 23, 0.12) 0px 12px 20px -10px, rgba(12, 12, 12, 0.21) 0px 4px 20px 0px, rgba(0, 0, 0, 0) 0px 7px 8px -5px",
                                 textAlign: "center"
                             }}
-                            p={console.log("pouya")}
                             noDataText="اطلاعاتی وجود ندارد"
                             // resizable={false}
                             data={this.props.dataTable}

@@ -166,7 +166,6 @@ class SearchProduct extends React.Component {
         numberFormat: '',
         select: '',
     }
-
     handler = search => event => {
         // console.log(this.state.search)
         this.props.handleChangeSearch(this.state.search);
@@ -375,7 +374,6 @@ class SearchProduct extends React.Component {
                                                         )
                                                 )
                                         ))}
-                                        {/*{console.log("pouya")}*/}
                                         {/*{console.log(this.state.search)}*/}
 
                                     </form>

@@ -250,6 +250,14 @@ class EditProduct extends React.Component {
 
             },
             {
+                name: "registerDateTo",
+                searchType: "numberFormat",
+                labelText: "تا تاریخ :",
+                placeholder: moment().locale('fa').format('YYYY/MM/DD'),
+                defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
+                format: "####/##/##",
+            },
+            {
                 name: "code",
                 searchType: "textField",
                 labelText: "شناسه کالا:",
@@ -263,14 +271,7 @@ class EditProduct extends React.Component {
             },
 
 
-            {
-                name: "registerDateTo",
-                searchType: "numberFormat",
-                labelText: "تا تاریخ :",
-                placeholder: moment().locale('fa').format('YYYY/MM/DD'),
-                defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
-                format: "####/##/##",
-            },
+
             {
                 name: "category",
                 searchType: "select",
@@ -493,6 +494,7 @@ class EditProduct extends React.Component {
                 data.registerDateTo = this.state.search[i].value;
             }
         }
+        console.log(data)
         var access_token = await getAccessToken();
         axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-product-item?access_token=` + access_token,
             data)
@@ -516,10 +518,12 @@ class EditProduct extends React.Component {
 
         // console.log(345)
         this.state.search = search
-
+console.log(search);
         this.searchItemProduct();
     };
-    handleClickOpen = code => async () => {
+
+
+    async edit(code) {
         console.log(1345432);
         var access_token = await getAccessToken();
         this.setState({
@@ -529,21 +533,22 @@ class EditProduct extends React.Component {
         axios.post(`http://shop.isuncharge.com/isunshop/fetch/search-product-item-with-details?access_token=` + access_token,
             data)
             .then(res => {
-                this.state.resData = res.data[0]
-                // console.log(res.data[0])
+                console.log(res.data)
+                this.state.resData = res.data.data[0]
+                // console.log(res.data.data[0])
                 var suplier = [];
                 var selectedSuplier = {};
                 var fileList = [];
-                this.state.productItemInfoList.productItemSupplier.identifier = res.data[0].productItemInfo.productItemSupplier.identifier;
+                this.state.productItemInfoList.productItemSupplier.identifier = res.data.data[0].productItemInfo.productItemSupplier.identifier;
                 suplier.push({
-                    value: res.data[0].productItemInfo.productItemSupplier.identifier,
-                    label: res.data[0].productItemInfo.productItemSupplier.name
+                    value: res.data.data[0].productItemInfo.productItemSupplier.identifier,
+                    label: res.data.data[0].productItemInfo.productItemSupplier.name
                 })
                 selectedSuplier = suplier[0];
-                for (var i = 0; i < res.data[0].productItemInfo.productItemImageBase64List.length; i++) {
+                for (var i = 0; i < res.data.data[0].productItemInfo.productItemImageBase64List.length; i++) {
                     var imagejson = {
                         uid: "rc-upload-1548016815471" + i,
-                        url: "data:image/jpg;base64," + res.data[0].productItemInfo.productItemImageBase64List[i]
+                        url: "data:image/jpg;base64," + res.data.data[0].productItemInfo.productItemImageBase64List[i]
                     }
                     fileList.push(imagejson)
 
@@ -553,12 +558,12 @@ class EditProduct extends React.Component {
                 this.setState({
 
                     open: true,
-                    dialogData: res.data[0],
-                    name: res.data[0].name,
+                    dialogData: res.data.data[0],
+                    name: res.data.data[0].name,
                     suplier: suplier,
                     selectedSuplier: selectedSuplier,
                     fileList: fileList,
-                    productItemInfoList: res.data[0].productItemInfo,
+                    productItemInfoList: res.data.data[0].productItemInfo,
                     linearProgress: false,
 
                 });
@@ -569,6 +574,11 @@ class EditProduct extends React.Component {
                 });
             this.showNotification("tc", "! عملیات انجام نشد", "danger")
         });
+    };
+
+
+    handleClickOpen = code => {
+       this.edit(code);
     };
 
     async useAccessToken() {
@@ -770,7 +780,7 @@ class EditProduct extends React.Component {
             </div>
         );
         const {classes} = this.props;
-        const text = <h6 className={classes.cardTitleWhite}>{this.state.name} : نام کالا</h6>;
+        const text = <h6 className={classes.cardTitleWhite}>نام کالا : {this.state.name}</h6>;
         const textBtnSave = <h6 className={classes.cardTitleWhite}>ذخیره</h6>;
         const textBtnCancel = <h6 className={classes.cardTitleWhite}>لغو</h6>;
         const {TextArea} = Input;

@@ -58,13 +58,13 @@ const dashboardRoutes = [
         icon: Dashboard,
         component: MainForm
     },
-    {
-        path: "/simCardInfo",
-        sidebarName: "اضافه کردن سیمکارت",
-        navbarName: "اضافه کردن سیمکارت",
-        icon: Dashboard,
-        component: simCardInfo
-    },
+    // {
+    //     path: "/simCardInfo",
+    //     sidebarName: "اضافه کردن سیمکارت",
+    //     navbarName: "اضافه کردن سیمکارت",
+    //     icon: Dashboard,
+    //     component: simCardInfo
+    // },
     {
         path: "/editProduct",
         sidebarName: "به روز رسانی کالا",
@@ -110,20 +110,20 @@ const dashboardRoutes = [
         icon: "content_paste",
         component: internetPack
     },
-    {
-        path: "/SaleInfoForm",
-        sidebarName: "گزارش فروش آیسان پرداخت",
-        navbarName: "گزارش فروش آیسان پرداخت",
-        icon: "content_paste",
-        component: SaleInfoForm
-    },
-    {
-        path: "/paymentPort",
-        sidebarName: "درگاه پرداخت",
-        navbarName: "درگاه پرداخت",
-        icon: BubbleChart,
-        component: paymentPort
-    },
+    // {
+    //     path: "/SaleInfoForm",
+    //     sidebarName: "گزارش فروش آیسان پرداخت",
+    //     navbarName: "گزارش فروش آیسان پرداخت",
+    //     icon: "content_paste",
+    //     component: SaleInfoForm
+    // },
+    // {
+    //     path: "/paymentPort",
+    //     sidebarName: "درگاه پرداخت",
+    //     navbarName: "درگاه پرداخت",
+    //     icon: BubbleChart,
+    //     component: paymentPort
+    // },
     {
         path: "/hardwareInfo",
         sidebarName: "وضعیت سخت افزار",

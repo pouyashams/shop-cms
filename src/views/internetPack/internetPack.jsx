@@ -221,7 +221,7 @@ class EditProduct extends React.Component {
                 searchType: "numberFormat",
                 labelText: "ازتاریخ:",
                 placeholder: moment().locale('fa').format('YYYY/MM/DD'),
-                defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
+                // defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
                 format: "####/##/##",
 
             },
@@ -230,7 +230,7 @@ class EditProduct extends React.Component {
                 searchType: "numberFormat",
                 labelText: "تا تاریخ :",
                 placeholder: moment().locale('fa').format('YYYY/MM/DD'),
-                defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
+                // defaultValue: moment().locale('fa').format('YYYY/MM/DD'),
                 format: "####/##/##",
             },
 
@@ -239,7 +239,11 @@ class EditProduct extends React.Component {
                 searchType: "select",
                 labelText: "اپراتور:",
                 placeholder: "--------------------",
-                selectOption: []
+                selectOption: [
+                    {value:"IRANCELL",label:"ایرانسل"},
+                    {value:"MCI",label:"همراه اول"},
+                    {value:"RIGHTEL",label:"رایتل"}
+                ]
             },
             {
                 name: "orderStatusCode ",
@@ -247,25 +251,19 @@ class EditProduct extends React.Component {
                 labelText: "کد وضعیت سفارش: ",
                 placeholder: "------------------------"
             },
-            {
-                name: "requesterTraceCode",
-                searchType: "textField",
-                labelText: "کد درخواست کننده : ",
-                placeholder: "------------------------"
-            },
+            // {
+            //     name: "requesterTraceCode",
+            //     searchType: "textField",
+            //     labelText: "کد درخواست کننده : ",
+            //     placeholder: "------------------------"
+            // },
             {
                 name: "customerReferenceNumber",
                 searchType: "textField",
                 labelText: "شماره پیگیری: ",
                 placeholder: "------------------------"
             },
-            {
-                name: "paymentGatewayProviderCode",
-                searchType: "select",
-                labelText: " درگاه پرداخت:",
-                placeholder: "--------------------",
-                selectOption: []
-            },
+
             {
                 name: "mobileNumber",
                 searchType: "textField",
@@ -273,91 +271,97 @@ class EditProduct extends React.Component {
                 placeholder: "-------------------------"
             },
             {
+                name: "paymentGatewayProviderCode",
+                searchType: "select",
+                labelText: " درگاه پرداخت:",
+                placeholder: "--------------------",
+                selectOption:  [
+                    {value:"PARSIAN_PAYMENT_GATEWAY_PROVIDER",label:"پارسیان"},
+                    {value:"FANAVA_PAYMENT_GATEWAY_PROVIDER",label:"فن آوا"}
+                ]
+            },
+            {
                 name: "subscriberNumber",
                 searchType: "textField",
                 labelText: " شماره ذینفع : ",
                 placeholder: "------------------------"
             },
+
             {
                 name: "packageCode",
                 searchType: "textField",
                 labelText: "کد بسته :",
                 placeholder: "-------------------------"
             },
-
+            {
+                name: "orderStatusCode",
+                searchType: "select",
+                labelText: "وضعیت سفارش: ",
+                placeholder: "---------------------",
+                selectOption: [
+                    {value:"REGISTERED_ORDER_STATUS",label:"ثبت شده"},
+                    {value:"PAID_ORDER_STATUS",label:"پرداخت شده"}
+                ],
+            },
         ],
         tableColumns: [{
             Header: 'مشخصات بسته',
             columns: [
                 {
                     Header: 'کد بسته',
-                    accessor: 'packageCode',
+                    accessor: 'internetPackage.code',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
                 {
                     Header: 'شناسه سفارش',
                     accessor: 'identifier',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
                 {
                     Header: 'شماره پیگیری ',
                     accessor: 'customerReferenceNumber',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
 
                 {
                     Header: ' درگاه پرداخت',
-                    accessor: 'paymentGatewayProviderCode',
+                    accessor: 'paymentGatewayProvider',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
                 {
                     Header: 'اپراتور',
-                    accessor: 'operatorCode',
+                    accessor: 'operator',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
                 {
                     Header: ' شماره ذینفع',
                     accessor: 'subscriberNumber',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
                 {
-                    Header: 'کد وضعیت سفارش',
-                    accessor: 'orderStatusCode ',
+                    Header: ' وضعیت سفارش',
+                    accessor: 'orderStatus',
                     filterable: false,
-                    resizable: false
+                    resizable: true
                 },
                 {
                     Header: 'شماره موبایل مشتری',
                     accessor: 'mobileNumber',
                     filterable: false,
-                    resizable: false
-                },
-                {
-                    Header: 'کد درخواست کننده  ',
-                    accessor: 'requesterTraceCode',
-                    filterable: false,
-                    resizable: true,
-                    width: "200px"
+                    resizable: true
                 },
 
-
-                {
-                    Header: 'درگاه پرداخت',
-                    accessor: 'paymentPort',
-                    filterable: false,
-                    resizable: false
-                },
                 {
                     Header: 'تاریخ',
                     filterable: false,
-                    accessor: 'date',
-                    resizable: false
+                    accessor: 'registerDateTime',
+                    resizable: true
                 },
             ]
         },],
@@ -409,14 +413,15 @@ class EditProduct extends React.Component {
         }
         var access_token = await getAccessToken();
 
-        axios.post(`http://baseurl.com/isunshop/report/search-internet-package-order?access_token=`+ access_token,
+        axios.post(`http://shop.isuncharge.com/isunshop/report/search-internet-package-order?access_token=`+ access_token,
             data)
             .then(res => {
                 const dataTable = []
                 this.setState({
                     linearProgress: false,
-                    "dataTable": res.data
+                    "dataTable": res.data.data
                 });
+                console.log(res.data.data)
             }).catch((error) => {
             this.setState({
                 linearProgress: false,
